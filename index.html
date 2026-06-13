@@ -101,7 +101,7 @@
     letter-spacing:.1em;text-transform:uppercase;display:block;margin-bottom:2px}
   .vbetter .eng{font-family:var(--font-mono);font-size:14px}
 
-  /* scheduler / 묵상집 */
+  /* scheduler / 프로그레스 */
   .sched .me{font-size:13px;color:var(--muted);margin-bottom:12px}
   .member{display:flex;align-items:center;gap:10px;padding:11px 0;border-top:1px solid var(--line)}
   .member:first-of-type{border-top:none}
@@ -154,7 +154,7 @@
     <div class="gate">
       <div class="eyebrow" style="text-align:center">안 되던 영어가</div>
       <h1 style="text-align:center;font-size:clamp(52px,11vw,96px);line-height:1;margin:6px 0 10px">쌉가능</h1>
-      <p style="text-align:center">쭈뼛대던 한 문장이<br>이제 영어 쌉가능.</p>
+      <p style="text-align:center">쭈뼛대던 한 문장이<br>저절로 터진다.</p>
       <div class="growdemo">
         <span class="chip seed">I run</span>
         <span class="chip plus">+ in the park</span>
@@ -204,9 +204,9 @@
         </div>
       </div>
 
-      <!-- RIGHT: scheduler / 묵상집 -->
+      <!-- RIGHT: scheduler / 프로그레스 -->
       <div class="card sched">
-        <div class="kicker">오늘의 묵상집</div>
+        <div class="kicker">프로그레스</div>
         <h2>누가 했을까?</h2>
         <div class="me" id="sched-date"></div>
         <div id="sched-list"><div class="muted small pulse">불러오는 중…</div></div>
@@ -771,7 +771,7 @@ async function finishLevelUp(){
 }
 
 /* ====================================================================
- *  일일 기록 + 스케줄러(묵상집)
+ *  일일 기록 + 스케줄러(프로그레스)
  * ==================================================================== */
 async function logPractice(){
   const day = todayKey();
@@ -838,14 +838,14 @@ const GUIDE_SECTIONS = [
      <li>한국어 문장을 보고 <b>영어로 8문장</b> 써요. 모르면 <b>건너뛰기</b> OK!</li>
      <li>틀려도 괜찮아요. 바로 <b>한국어 피드백</b>이 떠요.</li>
      <li>유닛을 통과해 모으면 → <b>승급 시험</b> → 다음 레벨 잠금 해제 🔓</li>
-     <li>매일 하면 <b>묵상집</b>에 ✅ 가 쌓이고, 친구를 👏 응원할 수 있어요.</li>
+     <li>매일 하면 <b>프로그레스</b>에 ✅ 가 쌓이고, 친구를 👏 응원할 수 있어요.</li>
    </ul>
    <p style="margin-top:10px" class="muted small">💡 꿀팁: 한국어를 먼저 떠올리지 말고, <b>'누가 한다'부터</b> 영어로 시작해요.</p>`,
   // 2. 선생님용
   `<ul style="padding-left:18px">
      <li>상단 <b>👩‍🏫 관리</b> → 우리 반 진도 한눈에. <b>△▽</b>로 레벨 조정(레벨 바꾸면 그 레벨 첫 유닛부터).</li>
      <li><b>배치고사</b>는 출발점만 잡아요. 안 맞으면 조정하거나, 아이가 빠르게 승급하게 두면 돼요.</li>
-     <li><b>묵상집(스케줄러)</b>로 누가 오늘 했는지 보고 서로 독려해요.</li>
+     <li><b>프로그레스</b>로 누가 오늘 했는지 보고 서로 독려해요.</li>
      <li><b>하루 루틴 권장:</b> ① 단어 조금 → ② 뼈대 연습 한 유닛(8문장) → ③ 자유 영작 2문장.</li>
      <li><b>합격선:</b> L1~3 유닛70%·승급80% / L4~6 75%·85% / L7~9 80%·88% (위로 갈수록 ↑).</li>
    </ul>
