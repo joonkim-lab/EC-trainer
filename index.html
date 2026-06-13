@@ -144,6 +144,7 @@
     <div class="brand">쌉가능<span class="dot">.</span></div>
     <div class="spacer"></div>
     <div class="who" id="who"></div>
+    <button class="link hidden" id="guide-btn" style="margin-right:10px">📖 가이드</button>
     <button class="link hidden" id="admin-btn" style="margin-right:10px">👩‍🏫 관리</button>
     <button class="link" id="signout">로그아웃</button>
   </div>
@@ -228,6 +229,22 @@
     </div>
   </section>
 
+  <!-- GUIDE (첫 로그인 필독 + 메뉴에서 재열람) -->
+  <section id="screen-guide" class="hidden">
+    <div class="card" style="max-width:760px;margin:0 auto">
+      <div class="kicker">쌉가능 가이드</div>
+      <h2 id="guide-h" style="margin:4px 0 12px">시작하기 전에 — 30초만</h2>
+      <div class="row" id="guide-tabs" style="gap:6px;flex-wrap:wrap;margin-bottom:14px">
+        <button class="btn ghost gtab" data-t="0">쌉가능이 뭐야</button>
+        <button class="btn ghost gtab" data-t="1">아이들용</button>
+        <button class="btn ghost gtab" data-t="2">선생님용</button>
+        <button class="btn ghost gtab" data-t="3">제작 노트</button>
+      </div>
+      <div id="guide-body" style="line-height:1.7"></div>
+      <div class="row" id="guide-foot" style="margin-top:18px"></div>
+    </div>
+  </section>
+
 </div>
 
 <div class="toast" id="toast"></div>
@@ -246,7 +263,7 @@
  *  앱 로직
  * ==================================================================== */
 const $ = id => document.getElementById(id);
-const show = id => { ['screen-gate','screen-placement','screen-main','screen-admin'].forEach(s=>$(s).classList.add('hidden')); $(id).classList.remove('hidden'); };
+const show = id => { ['screen-gate','screen-placement','screen-main','screen-admin','screen-guide'].forEach(s=>$(s).classList.add('hidden')); $(id).classList.remove('hidden'); };
 const TEACHER_EMAIL = 'joon.kim@educclesia.com';
 const isTeacher = () => !!(USER && (USER.email||'').toLowerCase() === TEACHER_EMAIL);
 function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
@@ -284,6 +301,8 @@ $('signin').onclick = async ()=>{
 $('signout').onclick = async ()=>{ if(auth) await auth.signOut(); location.reload(); };
 $('admin-btn').onclick = ()=> openAdmin();
 $('admin-back').onclick = ()=> enterMain();
+$('guide-btn').onclick = ()=> openGuide(false);
+document.querySelectorAll('.gtab').forEach(b=> b.onclick = ()=> renderGuideTab(+b.dataset.t));
 
 if(!firebaseReady){
   $('gate-note').textContent = '⚙️ 설정 대기: firebase-config.js와 firestore.rules에 값을 넣으면 로그인이 켜집니다. (SETUP_Firebase.md 참고)';
@@ -305,7 +324,8 @@ if(firebaseReady){
       return;
     }
     renderTopbar();
-    if(!MEMBER.level){ startPlacement(); }
+    if(!MEMBER.guideSeen){ openGuide(true); }       // 첫 로그인: 가이드 필독
+    else if(!MEMBER.level){ startPlacement(); }
     else { enterMain(); }
   });
 }
@@ -318,6 +338,7 @@ function renderTopbar(){
     `<span>${name}</span>` +
     (MEMBER.level? `<span class="badge">LEVEL ${MEMBER.level}</span>`:'');
   $('admin-btn').classList.toggle('hidden', !isTeacher());
+  $('guide-btn').classList.remove('hidden');
 }
 
 async function loadOrCreateMember(user){
@@ -333,6 +354,7 @@ async function loadOrCreateMember(user){
     level:null,           // 배치고사 전
     idx:0,                // 평탄화된 유닛 포인터
     passedUnits:{},
+    guideSeen:false,
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   };
   await ref.set(fresh);
@@ -793,6 +815,77 @@ async function syncStreak(){
 
 const DOW=['월','화','수','목','금','토','일'];
 const AV_COLORS=['#2E5EAA','#5B8C6E','#26407A','#E0992A','#8E5BAA'];
+/* ====================================================================
+ *  가이드 (첫 로그인 필독 + 메뉴 재열람)
+ * ==================================================================== */
+const GUIDE_SECTIONS = [
+  // 0. 쌉가능이 뭐야
+  `<p><b>쌉가능</b>은 한국에서 자란 학습자가 영어 문장을 <b>스스로 만들며</b> 자신감을 키우는 훈련 앱이에요.</p>
+   <p style="margin-top:10px"><b>핵심 원리 — 뼈대 → 확장</b><br>
+   영어는 늘 <b>'누가 한다'(주어+동사)</b>를 먼저 박고, 뒤에 하나씩 붙여요.<br>
+   <span class="chip seed" style="margin-top:6px;display:inline-block">I run</span>
+   <span class="chip plus">+ in the park</span>
+   <span class="chip plus">+ every morning</span></p>
+   <ul style="margin-top:10px;padding-left:18px">
+     <li>빈칸 채우기 없이 <b>통문장</b>을 직접 써요.</li>
+     <li>AI가 <b>한국어로, 한 번에 한 가지</b>만 짚어줘요. 뜻이 통하고 어순이 맞으면 통과!</li>
+     <li>9단계: <b>문장 쌉가능 → … → 영어 쌉가능(만렙)</b>.</li>
+   </ul>`,
+  // 1. 아이들용
+  `<p><b>매일 이렇게 해요 👇</b></p>
+   <ul style="padding-left:18px;margin-top:8px">
+     <li>유닛에 들어가면 <b>"이건 왜 배우나"</b> 설명을 먼저 봐요.</li>
+     <li>한국어 문장을 보고 <b>영어로 8문장</b> 써요. 모르면 <b>건너뛰기</b> OK!</li>
+     <li>틀려도 괜찮아요. 바로 <b>한국어 피드백</b>이 떠요.</li>
+     <li>유닛을 통과해 모으면 → <b>승급 시험</b> → 다음 레벨 잠금 해제 🔓</li>
+     <li>매일 하면 <b>묵상집</b>에 ✅ 가 쌓이고, 친구를 👏 응원할 수 있어요.</li>
+   </ul>
+   <p style="margin-top:10px" class="muted small">💡 꿀팁: 한국어를 먼저 떠올리지 말고, <b>'누가 한다'부터</b> 영어로 시작해요.</p>`,
+  // 2. 선생님용
+  `<ul style="padding-left:18px">
+     <li>상단 <b>👩‍🏫 관리</b> → 우리 반 진도 한눈에. <b>△▽</b>로 레벨 조정(레벨 바꾸면 그 레벨 첫 유닛부터).</li>
+     <li><b>배치고사</b>는 출발점만 잡아요. 안 맞으면 조정하거나, 아이가 빠르게 승급하게 두면 돼요.</li>
+     <li><b>묵상집(스케줄러)</b>로 누가 오늘 했는지 보고 서로 독려해요.</li>
+     <li><b>하루 루틴 권장:</b> ① 단어 조금 → ② 뼈대 연습 한 유닛(8문장) → ③ 자유 영작 2문장.</li>
+     <li><b>합격선:</b> L1~3 유닛70%·승급80% / L4~6 75%·85% / L7~9 80%·88% (위로 갈수록 ↑).</li>
+   </ul>
+   <p style="margin-top:10px" class="muted small">레벨 3 완주 → 듀오링고 → AP로 이어가는 다음 단계 안내가 떠요.</p>`,
+  // 3. 제작 노트
+  `<ul style="padding-left:18px">
+     <li>커리큘럼은 <b>보편적인 영어 문법 습득 순서</b>(뼈대→시제→조동사→수식→구→연결→태·비교→절→가정법)로 <b>독자 구성</b>했어요. 특정 교재의 목차·예문을 복제하지 않습니다.</li>
+     <li>모든 연습 문장은 <b>AI가 새로 생성</b>해요(교재 예문 미사용).</li>
+     <li>교수 철학 <b>'뼈대 → 확장'</b>은 누구나 쓸 수 있는 보편 원리예요.</li>
+   </ul>
+   <p style="margin-top:12px" class="muted small">made by <b>coldwater1042</b></p>`
+];
+let guideFirst = false;
+function openGuide(firstTime){
+  guideFirst = !!firstTime;
+  show('screen-guide');
+  $('guide-h').textContent = firstTime ? '시작하기 전에 — 30초만 읽어요' : '쌉가능 가이드';
+  renderGuideTab(0);
+  $('guide-foot').innerHTML = firstTime
+    ? `<button class="btn" id="guide-go">읽었어요, 시작하기 →</button>`
+    : `<button class="btn" id="guide-go">닫기</button>`;
+  $('guide-go').onclick = firstTime ? finishGuide : closeGuide;
+}
+function renderGuideTab(i){
+  $('guide-body').innerHTML = GUIDE_SECTIONS[i];
+  document.querySelectorAll('.gtab').forEach(b=>{
+    const on = (+b.dataset.t)===i;
+    b.style.background = on ? 'var(--t-accent)' : '';
+    b.style.color = on ? '#fff' : '';
+    b.style.borderColor = on ? 'var(--t-accent)' : '';
+  });
+}
+async function finishGuide(){
+  try{ await saveMember({ guideSeen:true }); }catch(e){ console.warn(e); }
+  if(!MEMBER.level){ startPlacement(); } else { enterMain(); }
+}
+function closeGuide(){
+  if(!MEMBER.level){ startPlacement(); } else { enterMain(); }
+}
+
 /* ====================================================================
  *  선생님 전용 — 진도 관리 / 레벨 조정
  * ==================================================================== */
