@@ -1,0 +1,10 @@
+{
+  "name": "yeongjak-functions",
+  "description": "영작 트레이너 AI 프록시 (Anthropic)",
+  "engines": { "node": "22" },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-functions": "^5.0.0"
+  },
+  "private": true
+}
