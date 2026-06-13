@@ -14,8 +14,8 @@
  *   unit.seeds    : 교재에서 뽑은 진짜 예문 (있으면 우선 사용, 없으면 AI 생성)
  * ===================================================================== */
 
-const CURRICULUM = [
-  /* ============================ LEVEL 1 ============================ */
+const BOOKS = [
+  /* ============================ 1차 임계점 (책 1) ============================ */
   {
     level: 1,
     name: "1차 임계점",
@@ -347,6 +347,51 @@ const CURRICULUM = [
   }
 ];
 
+/* =====================================================================
+ * 9레벨 재편성
+ *   책 3권(BOOKS)을 단원(챕터) 경계를 지켜 각 3등분 → 총 9레벨.
+ *   기존 단원·문장 내용은 그대로 두고 "묶음"만 새로 만든다.
+ *   book : 0=1차, 1=2차, 2=3차 임계점
+ *   chs  : 해당 책에서 가져올 챕터 구간 [시작, 끝)  (0-기반)
+ * ===================================================================== */
+const LEVEL_PLAN = [
+  { level: 1, book: 0, chs: [0, 2], name: "1차 · 1단계", title: "뼈대 세우기",
+    theme: { key: "blueprint", ink: "#1E3A6E", accent: "#2E5EAA", soft: "#E8EEF8" } },
+  { level: 2, book: 0, chs: [2, 4], name: "1차 · 2단계", title: "수식어로 늘이기",
+    theme: { key: "blueprint", ink: "#1B3360", accent: "#3A6CB5", soft: "#E4EBF6" } },
+  { level: 3, book: 0, chs: [4, 6], name: "1차 · 3단계", title: "명사덩어리·문장 연결",
+    theme: { key: "blueprint", ink: "#182C54", accent: "#4577C0", soft: "#E0E8F4" } },
+
+  { level: 4, book: 1, chs: [0, 1], name: "2차 · 1단계", title: "시제 완성",
+    theme: { key: "sage", ink: "#2F4A3A", accent: "#5B8C6E", soft: "#E9F1EB" } },
+  { level: 5, book: 1, chs: [1, 4], name: "2차 · 2단계", title: "주어 바꾸기·동사 변형",
+    theme: { key: "sage", ink: "#2A4636", accent: "#4E8463", soft: "#E4EEE7" } },
+  { level: 6, book: 1, chs: [4, 7], name: "2차 · 3단계", title: "문장 유형·정확성",
+    theme: { key: "sage", ink: "#254032", accent: "#437C59", soft: "#DFEAE2" } },
+
+  { level: 7, book: 2, chs: [0, 3], name: "3차 · 1단계", title: "뉘앙스·비교·공손",
+    theme: { key: "navy", ink: "#16213E", accent: "#26407A", soft: "#E7EBF4" } },
+  { level: 8, book: 2, chs: [3, 6], name: "3차 · 2단계", title: "관계사·분사로 확장",
+    theme: { key: "navy", ink: "#141E38", accent: "#2A4685", soft: "#E3E8F2" } },
+  { level: 9, book: 2, chs: [6, 8], name: "3차 · 3단계", title: "가정법·문장 재구성",
+    theme: { key: "navy", ink: "#111A30", accent: "#2E4C90", soft: "#DFE5F0" } }
+];
+
+const BOOK_LABEL = ["1차 임계점", "2차 임계점", "3차 임계점"];
+
+const CURRICULUM = LEVEL_PLAN.map(p => ({
+  level: p.level,
+  name: p.name,                 // 예: "1차 · 2단계"
+  title: p.title,               // 예: "수식어로 늘이기"
+  book: p.book + 1,             // 1·2·3차
+  bookLabel: BOOK_LABEL[p.book],
+  tagline: `${BOOK_LABEL[p.book]} · ${p.title}`,
+  theme: p.theme,
+  chapters: BOOKS[p.book].chapters.slice(p.chs[0], p.chs[1])
+}));
+
+const MAX_LEVEL = CURRICULUM.length; // 9
+
 /* ---- 파생 데이터: 유닛을 평탄화해서 진도 계산에 사용 ---- */
 function flattenUnits(levelNum) {
   const lv = CURRICULUM.find(l => l.level === levelNum);
@@ -360,14 +405,36 @@ function flattenUnits(levelNum) {
   return out;
 }
 
-/* 승급·통과 기준점 (준킴쌤이 자유롭게 조정 가능) */
+/* =====================================================================
+ * 승급·통과 기준점 (준킴쌤이 자유롭게 조정 가능)
+ *   합격선은 위 레벨로 갈수록 살짝 높아진다.
+ *     레벨 1~3 (1차/기초): 유닛 70% · 승급시험 80%
+ *     레벨 4~6 (2차/중급): 유닛 75% · 승급시험 85%
+ *     레벨 7~9 (3차/고급): 유닛 80% · 승급시험 88%
+ * ===================================================================== */
 const RULES = {
-  UNIT_SET_SIZE: 8,        // 한 유닛에서 출제되는 문장 수
-  UNIT_PASS_RATIO: 0.75,   // 유닛 통과: 75% 이상 '통과' 판정
-  LEVELUP_SET_SIZE: 12,    // 승급 시험 문장 수
-  LEVELUP_PASS_RATIO: 0.85,// 승급 통과: 85% 이상
-  PLACEMENT_SIZE: 6,       // 배치고사 문장 수
-  PASS_SCORE: 70           // 한 문장이 '통과'로 인정되는 점수(0~100)
+  UNIT_SET_SIZE: 8,         // 한 유닛에서 출제되는 문장 수
+  LEVELUP_SET_SIZE: 12,     // 승급 시험 문장 수
+  PLACEMENT_PASS: 70,       // 배치고사에서 한 레벨을 '통과'로 보는 점수
+  PASS_SCORE: 70,           // 한 문장이 '통과'로 인정되는 점수(0~100)
+  // 기본값(중급 기준) — rulesFor()가 레벨별로 덮어씀
+  UNIT_PASS_RATIO: 0.75,
+  LEVELUP_PASS_RATIO: 0.85,
+  MAX_LEVEL
 };
 
-if (typeof module !== "undefined") module.exports = { CURRICULUM, flattenUnits, RULES };
+/* 레벨별 합격선 — 책 구간(1차/2차/3차)에 따라 단계적으로 상승 */
+function rulesFor(level) {
+  let unit = 0.75, levelup = 0.85;        // 4~6
+  if (level <= 3)      { unit = 0.70; levelup = 0.80; }  // 1~3
+  else if (level >= 7) { unit = 0.80; levelup = 0.88; }  // 7~9
+  return {
+    UNIT_SET_SIZE: RULES.UNIT_SET_SIZE,
+    LEVELUP_SET_SIZE: RULES.LEVELUP_SET_SIZE,
+    PASS_SCORE: RULES.PASS_SCORE,
+    UNIT_PASS_RATIO: unit,
+    LEVELUP_PASS_RATIO: levelup
+  };
+}
+
+if (typeof module !== "undefined") module.exports = { CURRICULUM, BOOKS, flattenUnits, RULES, rulesFor, MAX_LEVEL };
