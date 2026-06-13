@@ -393,7 +393,7 @@ async function gradeSentence(korean, answer, focus, level){
   return {
     score, pass: score>=RULES.PASS_SCORE, meaningOk:looksEnglish, skeletonOk:looksEnglish,
     feedbackKo: looksEnglish
-      ? '간이 채점 중이에요(정밀 채점은 AI 함수 배포 후 켜집니다). 주어+서술어 뼈대를 먼저 세웠는지 한 번 더 확인해 봐요.'
+      ? '지금은 간단 채점이에요. 주어+서술어 뼈대(누가 한다)를 먼저 세웠는지 한 번 더 확인해 봐요.'
       : '영어 문장으로 두 단어 이상 써 볼까요? 먼저 ‘누가 한다’부터요.',
     betterAnswer:'', skeleton:''
   };
@@ -421,9 +421,8 @@ async function generateSet(unit, level, count){
   }
   // 함수 없음 → 교재 예문만이라도(섞어서)
   if(shuffled.length) return shuffled.slice(0,count);
-  // 둘 다 없으면 안내용 1문항
-  return [{ko:'(이 유닛은 AI 출제 함수 배포 후 자동으로 문제가 생성돼요.)',
-           hint:unit.focus, ref:''}];
+  // 둘 다 없으면 빈 배열 → 호출부에서 '다시 시도' UI 표시
+  return [];
 }
 
 /* ====================================================================
@@ -584,10 +583,21 @@ async function loadUnit(idx){
   $('u-bar').style.width = Math.round(passed/total*100)+'%';
   $('u-progress').textContent = `레벨 진도 ${passed} / ${total} 유닛 통과`;
 
-  $('practice-area').innerHTML = `<div class="muted small pulse">문제 준비 중…</div>`;
+  $('practice-area').innerHTML = `<div class="muted small pulse">문제를 만들고 있어요… 조금만 기다리세요! ✏️</div>`;
   SET = await generateSet(CUR, MEMBER.level, RULES.UNIT_SET_SIZE);
   setPos=0; setPass=0;
+  if(!SET || !SET.length){ renderGenError(()=>loadUnit(idx)); return; }
   renderPractice();
+}
+
+function renderGenError(retry){
+  $('practice-area').innerHTML = `
+    <div style="text-align:center;padding:26px 8px">
+      <div style="font-size:15px;margin-bottom:6px">앗, 문제를 못 불러왔어요 😅</div>
+      <div class="muted small" style="margin-bottom:16px">인터넷이 잠깐 느렸을 수 있어요. 다시 시도해 주세요.</div>
+      <button class="btn" id="gen-retry">다시 시도</button>
+    </div>`;
+  if($('gen-retry')) $('gen-retry').onclick = retry;
 }
 
 function growthChips(skeleton, ko){
@@ -695,7 +705,7 @@ let luState=null;
 async function startLevelUp(){
   $('nextstep').classList.add('hidden');
   // 통과한 유닛들에서 시드/AI로 섞어 출제
-  $('practice-area').innerHTML = `<div class="muted small pulse">승급 시험 준비 중…</div>`;
+  $('practice-area').innerHTML = `<div class="muted small pulse">승급 시험을 준비하고 있어요… 조금만 기다리세요! ✏️</div>`;
   let pool=[];
   const RL = rulesFor(MEMBER.level);
   for(const u of UNITS){ if(u.seeds) pool=pool.concat(u.seeds.map(s=>({...s,focus:u.focus}))); }
