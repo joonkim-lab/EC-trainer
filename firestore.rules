@@ -40,9 +40,9 @@ service cloud.firestore {
     // ── 학생 개인 데이터: 본인 + 선생님만 ──────────────────────────
     match /members/{uid} {
       allow read:  if isAllowed() && (isOwner(uid) || isTeacher());
-      allow write: if isAllowed() && isOwner(uid);
+      allow write: if isAllowed() && (isOwner(uid) || isTeacher());   // 선생님은 레벨 조정 가능
 
-      // 진도 / 일일 기록 / 승급 시험 결과 (하위 컬렉션)
+      // 진도 / 일일 기록 / 승급 시험 결과 (하위 컬렉션) — 본인만 기록
       match /{sub=**} {
         allow read:  if isAllowed() && (isOwner(uid) || isTeacher());
         allow write: if isAllowed() && isOwner(uid);
