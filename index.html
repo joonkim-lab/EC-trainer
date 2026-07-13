@@ -134,6 +134,69 @@
   .small{font-size:13px}
   .pulse{animation:p 1.1s ease-in-out infinite}
   @keyframes p{0%,100%{opacity:1}50%{opacity:.45}}
+  /* ===== 새 유닛 흐름 (익힘카드 → 연습 → 실전) ===== */
+  .stagebar{display:flex;align-items:center;gap:8px;margin:2px 0 14px;flex-wrap:wrap}
+  .stagebar .stg{font-size:12px;font-weight:700;color:var(--muted);opacity:.55}
+  .stagebar .stg.on{color:var(--t-accent);opacity:1}
+  .stagebar .stg.done{opacity:.85}
+  .stagebar i{color:var(--line);font-style:normal;font-weight:800}
+
+  .learncard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px 15px;margin-bottom:12px}
+  .lc-sec{margin-top:14px}
+  .lc-sec:first-child{margin-top:0}
+  .lc-sec h4{font-size:13px;font-weight:800;color:var(--t-accent);margin:0 0 6px}
+  .lc-sec p{margin:0;font-size:15px;line-height:1.65}
+
+  .demo{background:var(--t-soft);border:1px dashed var(--line);border-radius:12px;padding:14px 13px;margin-top:6px}
+  .demo .ko-src{font-size:15px;font-weight:700;margin-bottom:10px}
+  .demo .ko-src .slash{opacity:.35;margin:0 6px;font-weight:800}
+  .dstep{display:flex;align-items:center;gap:8px;margin:6px 0;font-size:14px;flex-wrap:wrap}
+  .dq{font-weight:800;color:var(--t-accent);min-width:58px}
+  .darr{opacity:.4;font-weight:800}
+  .dpill{background:var(--card);border:1.5px solid var(--t-accent);color:var(--t-accent);
+    font-weight:800;padding:2px 10px;border-radius:8px;font-size:14px}
+  .demo-answer{margin-top:10px;padding-top:10px;border-top:1px solid var(--line);
+    font-size:17px;font-weight:800;color:var(--t-accent)}
+  .demo-tip{margin-top:6px;font-size:13px;color:var(--muted)}
+
+  .pcard{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:15px;margin-bottom:12px}
+  .brow{display:flex;align-items:flex-start;gap:8px;padding:10px 0;border-bottom:1px dashed var(--line)}
+  .brow:last-of-type{border-bottom:none}
+  .bq{font-weight:800;color:var(--t-accent);min-width:62px;font-size:14px;padding-top:2px}
+  .ba{display:flex;flex-direction:column;gap:2px}
+  .ben{font-weight:800;font-size:16px}
+  .bhint{font-size:12px;color:#c2410c;font-weight:700}
+  .assembled{margin-top:12px;background:#ecfdf5;border:1px solid #bbf7d0;border-radius:10px;
+    padding:12px;font-size:17px;font-weight:800;color:#065f46;text-align:center}
+
+  .chalhead{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+  .qdots{display:flex;gap:6px}
+  .qdot{width:9px;height:9px;border-radius:50%;background:var(--line)}
+  .qdot.cur{background:var(--t-accent)}
+  .qdot.done{background:#059669}
+
+  .chunkbox{background:var(--t-soft);border:1px dashed var(--line);border-radius:12px;padding:12px 13px;margin-top:10px}
+  .clab-h{font-size:11px;font-weight:800;color:var(--muted);letter-spacing:.5px;margin-bottom:4px}
+  .crow{display:flex;gap:8px;margin:4px 0;font-size:14px}
+  .clab{font-weight:800;color:var(--t-accent);min-width:56px}
+
+  .hintlist{margin:8px 0 0;padding-left:18px}
+  .hintlist li{margin:6px 0;font-size:13.5px;line-height:1.55;font-weight:600}
+
+  .misslist{margin-top:8px}
+  .missrow{font-size:13px;margin:5px 0;color:var(--muted)}
+  .missrow b{color:var(--t-accent)}
+
+  .levelup{background:linear-gradient(100deg,#4f46e5,#7c3aed 55%,#db2777);border-radius:18px;
+    padding:30px 22px;text-align:center;color:#fff;margin-bottom:12px}
+  .levelup .burst{font-size:46px;line-height:1;margin-bottom:6px}
+  .levelup .skilltag{font-size:12px;font-weight:800;letter-spacing:1px;opacity:.9}
+  .levelup h2{font-size:25px;font-weight:900;margin:6px 0 8px}
+  .levelup p{font-size:14px;opacity:.95;margin:0 auto;max-width:340px;line-height:1.6}
+  .levelup .nextbadge{display:inline-block;margin-top:14px;background:rgba(255,255,255,.18);
+    border:1px solid rgba(255,255,255,.35);border-radius:99px;padding:6px 15px;font-weight:800;font-size:13px}  .unit-no{display:inline-block;font-size:11px;font-weight:800;color:var(--t-accent);
+    background:var(--t-soft);padding:2px 9px;border-radius:7px;margin-right:9px;
+    vertical-align:middle;letter-spacing:0;line-height:1.5}
 </style>
 </head>
 <body>
@@ -264,8 +327,15 @@
  * ==================================================================== */
 const $ = id => document.getElementById(id);
 const show = id => { ['screen-gate','screen-placement','screen-main','screen-admin','screen-guide'].forEach(s=>$(s).classList.add('hidden')); $(id).classList.remove('hidden'); };
-const TEACHER_EMAIL = 'joon.kim@educclesia.com';
-const isTeacher = () => !!(USER && (USER.email||'').toLowerCase() === TEACHER_EMAIL);
+const TEACHER_EMAILS = [
+  'joon.kim@educclesia.com',
+  'judy.hong@eliteopenschool.org',
+  'eunji.ahn@eliteopenschool.org',
+  'jeein.kang@eliteopenschool.org',
+  'sol.park@eliteopenschool.org',
+];
+const isTeacherEmail = (e) => TEACHER_EMAILS.includes((e||'').toLowerCase());
+const isTeacher = () => !!(USER && isTeacherEmail(USER.email));
 function toast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'),2200); }
 function todayKey(){ const d=new Date(); return d.getFullYear()+String(d.getMonth()+1).padStart(2,'0')+String(d.getDate()).padStart(2,'0'); }
 function weekdayIdx(){ return (new Date().getDay()+6)%7; } // 월=0 … 일=6
@@ -353,7 +423,11 @@ async function loadOrCreateMember(user){
     grade:null,
     level:null,           // 배치고사 전
     idx:0,                // 평탄화된 유닛 포인터
+    stage:'card',         // 유닛 내 위치: card | practice | challenge
+    cIdx:0,               // 실전 3문제 중 현재 문제 번호
     passedUnits:{},
+    examPermit:{},        // 레벨 시험 허가: { "1":true } 형태 (선생님이 부여)
+    examWrong:[],         // 지난 시험에서 틀린 문제 (오답 복습용)
     guideSeen:false,
     createdAt: firebase.firestore.FieldValue.serverTimestamp()
   };
@@ -379,24 +453,67 @@ async function callAI(payload){
   return await r.json();
 }
 
-async function gradeSentence(korean, answer, focus, level){
+/* ---- 오답 진단: L1에서 반복되는 실수를 한국어로 콕 짚어준다 ---- */
+const _ARTS=['a','an','the'], _BE=['am','is','are'];
+const _norm = s => (s||'').toLowerCase().trim().replace(/[.!?]+$/,'').replace(/\s+/g,' ');
+const _tok  = s => _norm(s).split(' ').filter(Boolean);
+function _exact(raw,ans){ return _tok(raw).join(' ')===_tok(ans).join(' '); }
+function _articleOnly(raw,ans){
+  const it=_tok(raw), at=_tok(ans);
+  const strip = a => a.filter(w=>!_ARTS.includes(w)).join(' ');
+  return !_exact(raw,ans) && strip(it)===strip(at)
+      && it.filter(w=>_ARTS.includes(w)).length===at.filter(w=>_ARTS.includes(w)).length;
+}
+function diagnose(raw, ch){
+  const it=_tok(raw), at=_tok(ch.answer||''), hints=[];
+  if(at[0]==='there'){
+    if(it[0]!=='there') hints.push("'있다'는 문장을 <b>There is / There are</b>로 시작해요.");
+    else if(_BE.includes(at[1]) && it[1]!==at[1]) hints.push(`여럿이면 <b>are</b>, 하나면 <b>is</b> — 여기선 <b>${at[1]}</b>예요.`);
+  }
+  const ansBe = at.find(w=>_BE.includes(w));
+  if(ansBe && at[0]!=='there'){
+    const inpBe = it.find(w=>_BE.includes(w));
+    if(!inpBe) hints.push("'이다 / 어떠하다'엔 <b>am · is · are</b>가 필요해요.");
+    else if(inpBe!==ansBe) hints.push(`누가에 맞는 be동사를 골라요 : 여기선 <b>${ansBe}</b>.`);
+  }
+  if(ch.verb && it.includes(ch.verb.base) && !it.includes(ch.verb.s))
+    hints.push(`누가가 <b>하나</b>면 '한다'에 <b>-s</b>를 붙여요 : ${ch.verb.base} → <b>${ch.verb.s}</b>`);
+  if(at.some(w=>_ARTS.includes(w)) && !it.some(w=>_ARTS.includes(w)))
+    hints.push("이름(명사) 앞에 붙는 <b>a / the</b>가 빠졌어요.");
+  return hints;
+}
+
+async function gradeSentence(korean, answer, focus, level, ch){
+  // 1) 정답이 정해진 문제(실전·총정리)는 로컬에서 먼저 정확히 판정
+  if(ch && ch.answer){
+    if(_exact(answer, ch.answer))
+      return { score:100, pass:true, feedbackKo:'완벽해요!', hints:[], betterAnswer:'' };
+    if(_articleOnly(answer, ch.answer))
+      return { score:95, pass:true, hints:[],
+        feedbackKo:'이렇게도 자연스러워요! 콕 집어 말하는 <b>특정한</b> 대상이면 the, 그냥 <b>아무 하나</b>면 a를 써요.',
+        betterAnswer: ch.answer };
+    const hints = diagnose(answer, ch);
+    if(hints.length){
+      const score = Math.max(30, 75 - (hints.length-1)*15);
+      return { score, pass:false, feedbackKo:'이 부분만 고치면 돼요 :', hints, betterAnswer:'' };
+    }
+  }
+  // 2) 그 외 → AI 채점
   try{
-    const out = await callAI({action:'grade', korean, studentAnswer:answer, focus, level});
-    if(out) return out;
+    const out = await callAI({action:'grade', korean, studentAnswer:answer, focus, level,
+                              expected: ch?ch.answer:undefined});
+    if(out){ out.pass = out.score >= RULES.PASS_SCORE; return out; }
   }catch(e){ console.warn(e); }
-  // ---- 간이 채점 (함수 배포 전 임시) ----
-  const a = (answer||'').trim();
-  const words = a.split(/\s+/).filter(Boolean).length;
-  const looksEnglish = /[A-Za-z]/.test(a) && words>=2;
-  const cap = /^[A-Z]/.test(a);
-  const score = looksEnglish ? (cap? 78:72) : 30;
-  return {
-    score, pass: score>=RULES.PASS_SCORE, meaningOk:looksEnglish, skeletonOk:looksEnglish,
-    feedbackKo: looksEnglish
-      ? '지금은 간단 채점이에요. 주어+서술어 뼈대(누가 한다)를 먼저 세웠는지 한 번 더 확인해 봐요.'
-      : '영어 문장으로 두 단어 이상 써 볼까요? 먼저 ‘누가 한다’부터요.',
-    betterAnswer:'', skeleton:''
-  };
+  // 3) AI 실패 → 정답 비교만이라도
+  if(ch && ch.answer){
+    return { score:45, pass:false, hints:[],
+      feedbackKo:'다시 한 번 볼까요? 막히면 <b>끊어보기</b>로 조각을 맞춰 보세요.', betterAnswer:'' };
+  }
+  const a=(answer||'').trim();
+  const ok = /[A-Za-z]/.test(a) && a.split(/\s+/).filter(Boolean).length>=2;
+  return { score: ok?72:30, pass:false, hints:[],
+    feedbackKo: ok ? '뼈대(누가 한다)를 먼저 세웠는지 확인해 봐요.' : '영어로 두 단어 이상 써 볼까요? 먼저 ‘누가 한다’부터요.',
+    betterAnswer:'' };
 }
 
 async function generateSet(unit, level, count){
@@ -470,25 +587,29 @@ const PLACEMENT_BANK = {
   ]
 };
 
+// 배치고사는 아직 9레벨 문항만 있음 → 뱅크 크기로 상한을 잡는다.
+// (12레벨 adaptive 재설계는 다음 작업 (D))
+const PLACEMENT_MAX = Math.max(...Object.keys(PLACEMENT_BANK).map(Number));
+
 let plState=null;
 let _plLevelScores=[];
 function startPlacement(){
   show('screen-placement');
   plState = { level:1, j:0, levelScores:[], decided:null };
   _plLevelScores = [];
-  $('pl-total').textContent = MAX_LEVEL;
+  $('pl-total').textContent = PLACEMENT_MAX;
   renderPlacement();
 }
 function plItem(){ return PLACEMENT_BANK[plState.level][plState.j]; }
 function plDone(){ // 지금까지 통과한 최고 레벨
   let top=0;
   for(const ls of plState.levelScores){ if(ls.pass) top=Math.max(top,ls.level); }
-  return Math.max(1, Math.min(top || 1, MAX_LEVEL));
+  return Math.max(1, Math.min(top || 1, PLACEMENT_MAX));
 }
 function renderPlacement(){
   const it = plItem();
   const per = PLACEMENT_BANK[plState.level].length;
-  $('pl-bar').style.width = ((plState.level-1)/MAX_LEVEL*100)+'%';
+  $('pl-bar').style.width = ((plState.level-1)/PLACEMENT_MAX*100)+'%';
   $('pl-area').innerHTML = `
     <div class="small muted" style="margin-bottom:4px">난이도 ${plState.level}단계 (${plState.j+1}/${per}) · 점점 어려워져요</div>
     <div class="ko">${it.ko}</div>
@@ -521,7 +642,7 @@ function recordPlacement(score){
   const pass = avg >= RULES.PLACEMENT_PASS;
   plState.levelScores.push({level:plState.level, avg, pass});
   _plLevelScores = [];
-  if(pass && plState.level < MAX_LEVEL){
+  if(pass && plState.level < PLACEMENT_MAX){
     plState.level++; plState.j=0; renderPlacement();
   } else {
     finishPlacement();
@@ -552,7 +673,7 @@ function finishPlacement(){
 /* ====================================================================
  *  연습 (메인)
  * ==================================================================== */
-let UNITS=[], CUR=null, SET=[], setPos=0, setPass=0;
+let UNITS=[], CUR=null;
 
 async function enterMain(){
   applyTheme(MEMBER.level);
@@ -572,223 +693,455 @@ function unitProgressText(){
   return {passed, total:UNITS.length};
 }
 
+/* ── 유닛 흐름: ① 익힘 카드 → ② 연습(한 줄씩) → ③ 실전(통문장 3문제) ──
+ * 실전은 90점 게이트. 3문제 모두 통과해야 유닛 완료.
+ * 아직 집필 안 된 레벨(L2~12)은 안내 화면을 띄운다.
+ */
 async function loadUnit(idx){
   CUR = UNITS[idx];
   const _lv = CURRICULUM.find(l=>l.level===MEMBER.level)||{};
   $('u-part').textContent = `LEVEL ${MEMBER.level} · ${_lv.title||''}  ·  ${_lv.bookLabel||''}`;
-  $('u-chapter').textContent = CUR.chapterTitle;
-  $('u-unit').textContent = `${CUR.title}`;
-  $('u-why').innerHTML = `<b>이건 왜 배우나 —</b> ${CUR.chapterWhy}<br><span class="muted small">오늘의 초점: ${CUR.focus}</span>`;
+  $('u-chapter').innerHTML = `<span class="unit-no">${(CUR.id||'').replace('-',' · ')}</span>${CUR.title || ''}`;
+  $('u-unit').textContent = CUR.tagline || CUR.skeleton || CUR.focus || '';
+  $('u-why').innerHTML = CUR.card
+    ? `<b>뭘 할 수 있게 되나 —</b> ${CUR.card.achieve}`
+    : `<span class="muted small">오늘의 초점: ${CUR.focus||''}</span>`;
+
   const {passed,total} = unitProgressText();
-  $('u-bar').style.width = Math.round(passed/total*100)+'%';
+  $('u-bar').style.width = Math.round(passed/Math.max(1,total)*100)+'%';
   $('u-progress').textContent = `레벨 진도 ${passed} / ${total} 유닛 통과`;
 
-  $('practice-area').innerHTML = `<div class="muted small pulse">문제를 만들고 있어요… 조금만 기다리세요! ✏️</div>`;
-  SET = await generateSet(CUR, MEMBER.level, RULES.UNIT_SET_SIZE);
-  setPos=0; setPass=0;
-  if(!SET || !SET.length){ renderGenError(()=>loadUnit(idx)); return; }
-  renderPractice();
+  if(!CUR.card){ renderNotReady(); return; }
+
+  uState = { stage:'card', cIdx:0, showChunks:false, extra:null, extraIdx:0 };
+  renderStage();
 }
 
-function renderGenError(retry){
+let uState = { stage:'card', cIdx:0, showChunks:false, extra:null, extraIdx:0 };
+
+function renderNotReady(){
   $('practice-area').innerHTML = `
-    <div style="text-align:center;padding:26px 8px">
-      <div style="font-size:15px;margin-bottom:6px">앗, 문제를 못 불러왔어요 😅</div>
-      <div class="muted small" style="margin-bottom:16px">인터넷이 잠깐 느렸을 수 있어요. 다시 시도해 주세요.</div>
-      <button class="btn" id="gen-retry">다시 시도</button>
+    <div style="text-align:center;padding:30px 8px">
+      <div style="font-size:30px">🚧</div>
+      <div style="font-size:15px;margin:8px 0 4px"><b>이 레벨은 준비 중이에요</b></div>
+      <div class="muted small">L1(뼈대)부터 차근차근 열려요. 선생님이 레벨을 조정해 줄 수 있어요.</div>
     </div>`;
-  if($('gen-retry')) $('gen-retry').onclick = retry;
 }
 
-function growthChips(skeleton, ko){
-  // 뼈대 칩 + 한국어 확장 힌트(있으면)
-  let html = '';
-  if(skeleton) html += `<span class="chip seed">${skeleton}</span>`;
-  return html;
+function stageBar(cur){
+  const S=[['1','익힘 카드','card'],['2','연습','practice'],['3','실전','challenge']];
+  const ci=S.findIndex(s=>s[2]===cur);
+  return `<div class="stagebar">${S.map((s,i)=>
+    `<span class="stg ${s[2]===cur?'on':''} ${i<ci?'done':''}">${s[0]}. ${s[1]}</span>`
+  ).join('<i>›</i>')}</div>`;
 }
 
-function renderPractice(){
-  if(setPos >= SET.length){ return finishUnitSet(); }
-  const it = SET[setPos];
+function renderStage(){
+  if(uState.stage==='card') return renderCard();
+  if(uState.stage==='practice') return renderPracticeBuild();
+  return renderChallenge();
+}
+
+/* ① 익힘 카드 */
+function renderCard(){
+  const c = CUR.card, d = c.demo;
+  const koSrc = d.ko.map((k,i)=> i<d.ko.length-1 ? `${k}<span class="slash">/</span>` : k).join('');
+  const steps = d.steps.map(s=>
+    `<div class="dstep"><span class="dq">${s.q}</span><span>${s.ko}</span><span class="darr">→</span><span class="dpill">${s.en}</span></div>`).join('');
   $('practice-area').innerHTML = `
-    <div class="counter" style="margin-bottom:6px">이번 유닛 ${setPos+1} / ${SET.length} · 통과 ${setPass}</div>
-    <div class="ko">${it.ko}</div>
-    <div class="hints">${(it.hint||'').split('/').filter(Boolean).map(h=>`<span class="hint">${h.trim()}</span>`).join('')}</div>
-    <textarea id="p-input" placeholder="‘누가 한다’부터 — 영어로 써 보세요" ${it.ref===''?'disabled':''}></textarea>
-    <div class="row">
-      <button class="btn" id="p-submit" ${it.ref===''?'disabled':''}>제출</button>
-      <button class="btn ghost" id="p-skip">건너뛰기</button>
-    </div>
-    <div id="p-verdict"></div>`;
-  const ta=$('p-input'); if(ta && !ta.disabled) ta.focus();
-  if($('p-submit')) $('p-submit').onclick = submitPractice;
-  $('p-skip').onclick = ()=>{ setPos++; renderPractice(); };
-}
-
-async function submitPractice(){
-  const v = $('p-input').value.trim();
-  if(!v){ toast('한 문장 써 볼까요?'); return; }
-  const it = SET[setPos];
-  $('p-submit').disabled=true; $('p-submit').textContent='채점 중…';
-  const g = await gradeSentence(it.ko, v, CUR.focus, MEMBER.level);
-  if(g.pass) setPass++;
-  $('p-verdict').innerHTML = `
-    <div class="verdict ${g.pass?'pass':'fail'}">
-      <div class="vhead">
-        <span class="tag ${g.pass?'pass':'fail'}">${g.pass?'통과':'다시'}</span>
-        ${g.skeleton?`<span class="chip seed">${g.skeleton}</span>`:''}
-        <span class="counter">${g.score}점</span>
+    ${stageBar('card')}
+    <div class="learncard">
+      <div class="lc-sec"><h4>🧭 언제·어떻게 쓰나</h4><p>${c.howto}</p></div>
+      <div class="lc-sec"><h4>✂️ 끊어읽기 시범</h4>
+        <div class="demo">
+          <div class="ko-src">${koSrc}</div>
+          ${steps}
+          <div class="demo-answer">= ${d.answer}</div>
+          <div class="demo-tip">💡 ${d.tip}</div>
+        </div>
       </div>
-      <div class="vbody">${g.feedbackKo||''}</div>
-      ${g.betterAnswer?`<div class="vbetter"><span class="lbl">더 자연스럽게</span><span class="eng">${g.betterAnswer}</span></div>`:''}
-      ${it.ref?`<div class="vbetter"><span class="lbl">교재 예시</span><span class="eng">${it.ref}</span></div>`:''}
     </div>
-    <div class="row">
-      ${g.pass?'':`<button class="btn ghost" id="p-retry">다시 쓰기</button>`}
-      <button class="btn" id="p-next">${setPos+1<SET.length?'다음 문장':'유닛 마치기'}</button>
-    </div>`;
-  if($('p-retry')) $('p-retry').onclick=()=>renderPractice();
-  $('p-next').onclick = async ()=>{ await logPractice(); setPos++; renderPractice(); };
+    <div class="row"><button class="btn" id="go-practice">연습 시작하기 →</button></div>`;
+  $('go-practice').onclick = async ()=>{
+    uState.stage='practice'; await saveMember({stage:'practice'}); renderStage();
+  };
 }
 
-async function finishUnitSet(){
-  const RL = rulesFor(MEMBER.level);
-  const ratio = setPass / SET.length;
-  const passedUnit = ratio >= RL.UNIT_PASS_RATIO;
-  if(passedUnit){
+/* ② 연습 — 한 줄씩 쌓기 (통과/탈락 없음) */
+function renderPracticeBuild(){
+  const cards = (CUR.practice||[]).map((p,i)=>{
+    const rows = p.steps.map(s=>
+      `<div class="brow"><div class="bq">${s.q}</div>
+        <div class="ba"><span class="ben">${s.en}</span>${s.hint?`<span class="bhint">${s.hint}</span>`:''}</div></div>`).join('');
+    return `<div class="pcard">
+      <div class="counter">연습 ${i+1} / ${CUR.practice.length}</div>
+      <div class="ko">${p.ko}</div>
+      <div class="muted small" style="margin-bottom:8px">덩어리를 하나씩 채우며 문장을 키워요. 손잡고 하는 단계 — 틀려도 괜찮아요.</div>
+      ${rows}
+      <div class="assembled">${p.answer}</div></div>`;
+  }).join('');
+  $('practice-area').innerHTML = `
+    ${stageBar('practice')}
+    ${cards}
+    <div class="row">
+      <button class="btn ghost" id="back-card">← 카드로</button>
+      <button class="btn" id="go-chal">실전 도전 →</button>
+    </div>`;
+  $('back-card').onclick = ()=>{ uState.stage='card'; renderStage(); };
+  $('go-chal').onclick = async ()=>{
+    uState.stage='challenge'; uState.cIdx=0;
+    await saveMember({stage:'challenge', cIdx:0}); renderStage();
+  };
+}
+
+/* ③ 실전 — 통문장 3문제 (90점 게이트) */
+function renderChallenge(){
+  const list = CUR.challenges||[];
+  const ch = uState.extra || list[uState.cIdx];
+  const isExtra = !!uState.extra;
+  const dots = list.map((_,i)=>{
+    let c='qdot';
+    if(isExtra) c+=' done';
+    else if(i<uState.cIdx) c+=' done';
+    else if(i===uState.cIdx) c+=' cur';
+    return `<span class="${c}"></span>`;
+  }).join('');
+  $('practice-area').innerHTML = `
+    ${stageBar('challenge')}
+    <div class="chalhead">
+      <span class="counter">${isExtra?'실전 · 응용':`실전 ${uState.cIdx+1} / ${list.length}`}</span>
+      <span class="qdots">${dots}</span>
+    </div>
+    <div class="ko">${ch.ko}</div>
+    <div class="muted small" style="margin-bottom:8px">
+      ${isExtra?'방금 배운 골격으로 한 문장 더!':'끊어읽기는 눈으로만, 영어는 한 번에 써요. <b>90점 미만이면 다시 쓰기</b>예요.'}
+    </div>
+    <textarea id="c-input" placeholder="여기에 영어 문장을 써 보세요"></textarea>
+    <div class="row">
+      <button class="btn ghost" id="c-chunk">✂️ 끊어보기</button>
+      <button class="btn" id="c-submit">채점하기</button>
+    </div>
+    <div id="c-chunkbox"></div>
+    <div id="c-verdict"></div>`;
+  $('c-input').focus();
+  $('c-chunk').onclick = ()=>{
+    uState.showChunks = !uState.showChunks;
+    $('c-chunkbox').innerHTML = uState.showChunks ? chunkHtml(ch) : '';
+  };
+  $('c-submit').onclick = ()=>submitChallenge(ch, isExtra);
+}
+
+function chunkHtml(ch){
+  const rows = ch.chunks
+    ? ch.chunks.map(c=>`<div class="crow"><span class="clab">${c.lab}</span><span>${c.ko}</span></div>`).join('')
+    : `<div class="crow"><span>배운 순서 그대로 — <b>${CUR.skeleton||CUR.title}</b> 순서로 조립해 보세요!</span></div>`;
+  return `<div class="chunkbox"><div class="clab-h">의미 단위로 끊어보기</div>${rows}</div>`;
+}
+
+async function submitChallenge(ch, isExtra){
+  const v = $('c-input').value.trim();
+  if(!v){ toast('한 문장 써 볼까요?'); return; }
+  $('c-submit').disabled=true; $('c-submit').textContent='채점 중…';
+  const g = await gradeSentence(ch.ko, v, CUR.focus, MEMBER.level, ch);
+  logPractice();   // 기록은 백그라운드로 — 채점 결과 표시를 막지 않는다
+
+  const list = CUR.challenges||[];
+  const isLast = !isExtra && uState.cIdx >= list.length-1;
+
+  if(g.pass && !isExtra && isLast){
     const pu = MEMBER.passedUnits||{}; pu[CUR.id]=true;
     await saveMember({passedUnits:pu});
   }
-  const {passed,total} = unitProgressText();
-  $('practice-area').innerHTML = `
-    <div class="verdict ${passedUnit?'pass':'fail'}">
-      <div class="vhead"><span class="tag ${passedUnit?'pass':'fail'}">${passedUnit?'유닛 통과':'조금 더'}</span>
-        <span class="counter">${setPass} / ${SET.length} 통과 (${Math.round(ratio*100)}%)</span></div>
-      <div class="vbody">${passedUnit
-        ? '잘했어요! 다음 유닛으로 넘어가요.'
-        : `통과 기준은 ${Math.round(RL.UNIT_PASS_RATIO*100)}%예요. 같은 유닛을 한 번 더 다지면 금방 넘어요.`}</div>
+
+  const hints = (g.hints&&g.hints.length)
+    ? `<ul class="hintlist">${g.hints.map(h=>`<li>${h}</li>`).join('')}</ul>` : '';
+
+  $('c-verdict').innerHTML = `
+    <div class="verdict ${g.pass?'pass':'fail'}">
+      <div class="vhead"><span class="tag ${g.pass?'pass':'fail'}">${g.pass?'통과':'다시'}</span>
+        <span class="counter">${g.score}점</span></div>
+      <div class="vbody">${g.feedbackKo||''}${hints}</div>
+      ${g.betterAnswer?`<div class="vbetter"><span class="lbl">더 자연스럽게</span><span class="eng">${g.betterAnswer}</span></div>`:''}
     </div>
-    <div class="row">
-      <button class="btn ghost" id="u-redo">이 유닛 다시</button>
-      ${passedUnit ? `<button class="btn" id="u-next">다음 유닛</button>` : ''}
-      ${(passed>=total) ? `<button class="btn" id="u-levelup">승급 시험 보기 →</button>` : ''}
-    </div>`;
-  $('u-redo').onclick = ()=>loadUnit(MEMBER.idx);
-  if($('u-next')) $('u-next').onclick = async ()=>{
-    const next = Math.min(MEMBER.idx+1, UNITS.length);
-    await saveMember({idx:next});
-    if(next>=UNITS.length) renderLevelComplete(); else loadUnit(next);
+    <div class="row" id="c-actions"></div>`;
+
+  const acts = $('c-actions');
+  if(!g.pass){
+    acts.innerHTML = `<button class="btn" id="c-retry">다시 쓰기</button>`;
+    $('c-retry').onclick = ()=>renderChallenge();
+    return;
+  }
+  // 통과
+  let html = '';
+  if((CUR.similar||[]).length && (isExtra || isLast)) html += `<button class="btn ghost" id="c-again">↻ 비슷한 문제 한 번 더</button>`;
+  if(isExtra || isLast){
+    const lastUnit = MEMBER.idx >= UNITS.length-1;
+    html += `<button class="btn" id="c-next">${lastUnit?'🏁 총정리 시험 보기 →':'다음 유닛 →'}</button>`;
+  } else {
+    html += `<button class="btn" id="c-nextq">다음 문제 →</button>`;
+  }
+  acts.innerHTML = html;
+  if($('c-again')) $('c-again').onclick = ()=>{
+    const pool = CUR.similar;
+    uState.extra = pool[uState.extraIdx % pool.length]; uState.extraIdx++;
+    uState.showChunks=false; renderChallenge();
   };
-  if($('u-levelup')) $('u-levelup').onclick = startLevelUp;
+  if($('c-nextq')) $('c-nextq').onclick = async ()=>{
+    uState.cIdx++; uState.showChunks=false; uState.extra=null;
+    await saveMember({cIdx:uState.cIdx}); renderChallenge();
+  };
+  if($('c-next')) $('c-next').onclick = async ()=>{
+    const next = MEMBER.idx+1;
+    if(next >= UNITS.length){ await saveMember({idx:UNITS.length}); return startLevelExam(); }
+    await saveMember({idx:next, stage:'card', cIdx:0});
+    loadUnit(next);
+  };
 }
 
 function renderLevelComplete(){
-  const {total} = unitProgressText();
-  const RL = rulesFor(MEMBER.level);
   const cur = CURRICULUM.find(l=>l.level===MEMBER.level)||{};
+  const {total} = unitProgressText();
+  const hasPermit = !!(MEMBER.examPermit||{})[MEMBER.level];
+  const hasWrong  = (MEMBER.examWrong||[]).length > 0;
+
   $('u-part').textContent = `LEVEL ${MEMBER.level} · ${cur.title||''}`;
   $('u-chapter').textContent = '레벨의 모든 유닛을 마쳤어요';
-  $('u-unit').textContent = MEMBER.level>=MAX_LEVEL ? '마지막 레벨까지 마무리하는 시험이에요.' : '이제 승급 시험으로 다음 레벨을 열 수 있어요.';
-  $('u-why').innerHTML = `<b>승급 기준 —</b> 여러 유닛에서 섞어 낸 ${RL.LEVELUP_SET_SIZE}문장 중 ${Math.round(RL.LEVELUP_PASS_RATIO*100)}% 이상 통과하면 ${MEMBER.level>=MAX_LEVEL?'전 과정을 완주합니다.':'다음 레벨이 열립니다.'}`;
+  $('u-unit').textContent = '이제 레벨 시험으로 다음 레벨을 열 수 있어요.';
+  $('u-why').innerHTML = `<b>통과 기준 —</b> AI가 새로 내는 <b>${RULES.EXAM_TOTAL}문제</b> 중 <b>${RULES.EXAM_MAX_WRONG}개까지만</b> 틀려야 통과예요 (${RULES.EXAM_PASS}개 이상).`;
   $('u-bar').style.width='100%';
   $('u-progress').textContent = `${total} / ${total} 유닛 통과`;
-  $('practice-area').innerHTML = `<div class="row">
-    <button class="btn" id="u-levelup2">승급 시험 보기 →</button>
-    <button class="btn ghost" id="u-review">유닛 복습</button></div>`;
-  $('u-levelup2').onclick = startLevelUp;
-  $('u-review').onclick = ()=>loadUnit(0);
-  if(MEMBER.level>=MAX_LEVEL) $('nextstep').classList.remove('hidden');
+
+  if(hasPermit){
+    $('practice-area').innerHTML = `
+      <div class="verdict pass" style="margin-bottom:10px">
+        <div class="vhead"><span class="tag pass">시험 허가됨</span></div>
+        <div class="vbody">선생님이 레벨 시험을 열어 줬어요. 준비됐으면 시작하세요.</div>
+      </div>
+      <div class="row">
+        <button class="btn" id="u-exam">🏁 레벨 시험 보기 (${RULES.EXAM_TOTAL}문제) →</button>
+        ${hasWrong?`<button class="btn ghost" id="u-review-wrong">지난 오답 복습</button>`:`<button class="btn ghost" id="u-review">유닛 복습</button>`}
+      </div>`;
+    $('u-exam').onclick = startLevelExam;
+  } else {
+    $('practice-area').innerHTML = `
+      <div class="verdict fail" style="margin-bottom:10px;background:#fff7ed;border-color:#fed7aa;color:#9a3412">
+        <div class="vhead"><span class="tag" style="background:#f97316;color:#fff">시험 대기</span></div>
+        <div class="vbody">유닛을 다 마쳤어요! 레벨 시험은 <b>선생님이 열어 줘야</b> 볼 수 있어요.
+          그동안 유닛을 복습하며 문장을 더 다져 두면 시험이 훨씬 쉬워져요.</div>
+      </div>
+      <div class="row">
+        <button class="btn ghost" id="u-review">유닛 복습하기</button>
+        ${hasWrong?`<button class="btn ghost" id="u-review-wrong">지난 오답 복습</button>`:''}
+      </div>`;
+  }
+  if($('u-review')) $('u-review').onclick = ()=>{ MEMBER.idx=0; loadUnit(0); };
+  if($('u-review-wrong')) $('u-review-wrong').onclick = startWrongReview;
 }
 
-/* ---- 승급 시험 ---- */
-let luState=null;
-async function startLevelUp(){
+/* ====================================================================
+ *  레벨 시험 — AI가 20문제 새로 출제 / 2개 이하 오답 통과 / 선생님 허가 필요
+ * ==================================================================== */
+let exState=null;
+
+async function startLevelExam(){
+  // 안전장치: 허가 없으면 시작 불가
+  if(RULES.EXAM_NEEDS_PERMIT && !(MEMBER.examPermit||{})[MEMBER.level]){
+    toast('레벨 시험은 선생님이 열어 줘야 볼 수 있어요.');
+    return renderLevelComplete();
+  }
   $('nextstep').classList.add('hidden');
-  // 통과한 유닛들에서 시드/AI로 섞어 출제
-  $('practice-area').innerHTML = `<div class="muted small pulse">승급 시험을 준비하고 있어요… 조금만 기다리세요! ✏️</div>`;
-  let pool=[];
-  const RL = rulesFor(MEMBER.level);
-  for(const u of UNITS){ if(u.seeds) pool=pool.concat(u.seeds.map(s=>({...s,focus:u.focus}))); }
-  // AI로 추가 생성
+  $('u-chapter').textContent='레벨 시험';
+  $('u-unit').textContent=`레벨 ${MEMBER.level} → ${MEMBER.level+1}`;
+  $('practice-area').innerHTML = `<div class="muted small pulse">AI가 ${RULES.EXAM_TOTAL}문제를 새로 내고 있어요… ✏️</div>`;
+
+  const items = await buildExamItems(RULES.EXAM_TOTAL);
+  if(!items.length){ renderGenError(startLevelExam); return; }
+
+  exState = { i:0, items, answers:[], correct:0, wrong:[] };
+  renderExam();
+}
+
+// AI로 이 레벨 유닛들에서 20문제 생성 (폴백: exam.questions → 유닛 challenges)
+async function buildExamItems(count){
+  const lv = CURRICULUM.find(l=>l.level===MEMBER.level)||{};
+  let items = [];
   if(FUNCTION_URL){
     try{
-      const sampleUnits = UNITS.filter((_,i)=>i%Math.max(1,Math.floor(UNITS.length/RL.LEVELUP_SET_SIZE))===0).slice(0,RL.LEVELUP_SET_SIZE);
-      for(const u of sampleUnits){
-        const out = await callAI({action:'generate', focus:u.focus, level:MEMBER.level, count:1});
-        if(out&&out.items) pool=pool.concat(out.items.map(it=>({...it,focus:u.focus})));
+      // 유닛을 골고루 돌며 AI가 문장을 새로 생성
+      let guard = 0;
+      while(items.length < count && guard < count*2){
+        const u = UNITS[items.length % UNITS.length];
+        const out = await callAI({action:'generate', focus:u.focus, level:MEMBER.level, count:1,
+          avoid: items.map(it=>it.answer||it.ko).join(' | ')});
+        if(out && out.items && out.items.length){
+          items = items.concat(out.items.map(it=>({...it, focus:u.focus})));
+        }
+        guard++;
       }
-    }catch(e){ console.warn(e); }
+    }catch(e){ console.warn('AI 시험 출제 실패, 폴백 사용:', e.message); }
   }
-  // 셔플 후 N개
-  pool = pool.sort(()=>Math.random()-0.5).slice(0, RL.LEVELUP_SET_SIZE);
-  if(pool.length===0){ pool = (PLACEMENT_BANK[MEMBER.level]||[]).map(it=>({...it})); }
-  luState = {i:0, items:pool, pass:0};
-  renderLevelUp();
+  // 폴백: 집필된 exam.questions → 그래도 부족하면 유닛 challenges 섞기
+  if(items.length < count){
+    let pool = ((lv.exam&&lv.exam.questions)||[]).slice();
+    for(const u of UNITS){ if(u.challenges) pool = pool.concat(u.challenges.map(c=>({...c, focus:u.focus}))); }
+    pool = pool.sort(()=>Math.random()-0.5);
+    items = items.concat(pool).slice(0, count);
+  }
+  return items.slice(0, count);
 }
-function renderLevelUp(){
-  const s=luState;
-  if(s.i>=s.items.length) return finishLevelUp();
-  const it=s.items[s.i];
-  $('u-chapter').textContent='승급 시험';
-  $('u-unit').textContent=`레벨 ${MEMBER.level} → ${MEMBER.level+1}`;
+
+function renderExam(){
+  const s=exState;
+  if(s.i>=s.items.length) return finishExam();
+  const q=s.items[s.i];
+  const pct = Math.round(s.i/s.items.length*100);
+  $('u-chapter').textContent='레벨 시험';
   $('practice-area').innerHTML = `
-    <div class="counter" style="margin-bottom:6px">${s.i+1} / ${s.items.length} · 통과 ${s.pass}</div>
-    <div class="ko">${it.ko}</div>
-    <div class="hints">${(it.hint||'').split('/').filter(Boolean).map(h=>`<span class="hint">${h.trim()}</span>`).join('')}</div>
-    <textarea id="lu-input" placeholder="영어로 써 보세요"></textarea>
-    <div class="row"><button class="btn" id="lu-submit">제출</button></div>
-    <div id="lu-v"></div>`;
-  $('lu-input').focus();
-  $('lu-submit').onclick = async ()=>{
-    const v=$('lu-input').value.trim(); if(!v){toast('한 문장 써 볼까요?');return;}
-    $('lu-submit').disabled=true; $('lu-submit').textContent='채점 중…';
-    const g = await gradeSentence(it.ko, v, it.focus||'', MEMBER.level);
-    if(g.pass) s.pass++;
-    await logPractice();
-    $('lu-v').innerHTML = `<div class="verdict ${g.pass?'pass':'fail'}">
-      <div class="vhead"><span class="tag ${g.pass?'pass':'fail'}">${g.pass?'통과':'다시'}</span><span class="counter">${g.score}점</span></div>
-      <div class="vbody">${g.feedbackKo||''}</div></div>
-      <div class="row"><button class="btn" id="lu-next">다음</button></div>`;
-    $('lu-next').onclick=()=>{ s.i++; renderLevelUp(); };
+    <div class="muted small" style="margin-bottom:6px">${RULES.EXAM_TOTAL}문제 중 <b>${RULES.EXAM_MAX_WRONG}개까지만</b> 틀려야 통과예요. 힌트 없이, 배운 걸 떠올려 써 봐요.</div>
+    <div class="progress" style="margin-bottom:10px"><i style="width:${pct}%"></i></div>
+    <div class="counter" style="margin-bottom:6px">문제 ${s.i+1} / ${s.items.length}</div>
+    <div class="ko">${q.ko}</div>
+    <textarea id="ex-input" placeholder="영어 문장을 써 보세요"></textarea>
+    <div class="row"><button class="btn" id="ex-next">${s.i<s.items.length-1?'다음 문제 →':'제출하고 채점하기'}</button></div>`;
+  $('ex-input').focus();
+  $('ex-next').onclick = async ()=>{
+    const v = $('ex-input').value.trim();
+    if(!v){ toast('한 문장 써 볼까요?'); return; }
+    $('ex-next').disabled=true;
+    s.answers[s.i]=v;
+    let ok;
+    if(q.answer){ ok = _exact(v,q.answer)||_articleOnly(v,q.answer); }
+    else { const g = await gradeSentence(q.ko, v, q.focus||'', MEMBER.level); ok = g.pass; }
+    if(ok) s.correct++; else s.wrong.push({ko:q.ko, answer:q.answer||'', focus:q.focus||''});
+    logPractice();
+    s.i++; renderExam();
   };
 }
-async function finishLevelUp(){
-  const s=luState; const ratio = s.pass/s.items.length;
-  const examLevel = MEMBER.level;                 // 승급 시험을 본 레벨(승급 전)
-  const RL = rulesFor(examLevel);
-  const passed = ratio >= RL.LEVELUP_PASS_RATIO;
-  if(passed && examLevel < MAX_LEVEL){
-    await saveMember({level:examLevel+1, idx:0});
-    await db.collection('members').doc(USER.uid).collection('levelup').doc('L'+examLevel).set({passed:true,score:Math.round(ratio*100),date:todayKey()},{merge:true});
-    applyTheme(MEMBER.level);
-  } else if(passed && examLevel >= MAX_LEVEL){
-    await db.collection('members').doc(USER.uid).collection('levelup').doc('L'+examLevel).set({passed:true,score:Math.round(ratio*100),date:todayKey()},{merge:true});
+
+async function finishExam(){
+  const s=exState;
+  const wrongCount = s.items.length - s.correct;
+  const passed = wrongCount <= RULES.EXAM_MAX_WRONG;
+  const examLevel = MEMBER.level;
+
+  if(passed){
+    await db.collection('members').doc(USER.uid).collection('levelup').doc('L'+examLevel)
+      .set({passed:true, correct:s.correct, total:s.items.length, date:todayKey()}, {merge:true});
+    // 허가 소모 + 오답 기록 비우기 + 레벨 상승
+    const permit = {...(MEMBER.examPermit||{})}; delete permit[examLevel];
+    if(examLevel < MAX_LEVEL){
+      await saveMember({level:examLevel+1, idx:0, stage:'card', cIdx:0, examPermit:permit, examWrong:[]});
+      applyTheme(MEMBER.level);
+    } else {
+      await saveMember({examPermit:permit, examWrong:[]});
+    }
+  } else {
+    // 떨어짐 → 틀린 문제 저장(복습용), 허가는 소모(선생님이 다시 열어줘야 재응시)
+    const permit = {...(MEMBER.examPermit||{})}; delete permit[examLevel];
+    await saveMember({examWrong: s.wrong, examPermit: permit});
   }
-  await syncStreak();
-  $('u-chapter').textContent = passed? '🎉 승급 통과!' : '조금만 더!';
+  await syncStreak().catch(()=>{});
+
+  const lv = CURRICULUM.find(l=>l.level===examLevel)||{};
+  $('u-chapter').textContent = passed? '🎉 통과!' : '조금만 더!';
   $('u-unit').textContent='';
+
+  if(passed){
+    const nextLv = CURRICULUM.find(l=>l.level===examLevel+1);
+    $('practice-area').innerHTML = `
+      <div class="levelup">
+        <div class="burst">🎉</div>
+        <div class="skilltag">SKILL UNLOCKED</div>
+        <h2>${lv.skill||'레벨 완료'}</h2>
+        <p>${lv.skillDesc || `${s.correct} / ${s.items.length} — 잘했어요! ${lv.title} 를 끝냈어요.`}</p>
+        ${nextLv?`<div class="nextbadge">다음 : ${lv.nextHint||('LEVEL '+nextLv.level+' · '+nextLv.title)}</div>`:''}
+      </div>
+      <div class="row"><button class="btn" id="ex-go">${examLevel<MAX_LEVEL?'다음 레벨 시작 →':'완주!'}</button></div>`;
+    $('ex-go').onclick = ()=>enterMain();
+    if(examLevel>=MAX_LEVEL) $('nextstep').classList.remove('hidden');
+    return;
+  }
+
+  const miss = s.wrong.map(w=>`<div class="missrow">✗ ${w.ko} → <b>${w.answer||'(정답 예시는 복습에서)'}</b></div>`).join('');
   $('practice-area').innerHTML = `
-    <div class="verdict ${passed?'pass':'fail'}">
-      <div class="vhead"><span class="tag ${passed?'pass':'fail'}">${passed?'합격':'재도전'}</span>
-        <span class="counter">${s.pass} / ${s.items.length} (${Math.round(ratio*100)}%)</span></div>
-      <div class="vbody">${passed
-        ? (examLevel>=MAX_LEVEL? '전 과정(레벨 9)까지 완주! 듀오링고 → AP 단계로 이어가요.' : `축하해요! 이제 <b>LEVEL ${MEMBER.level}</b> 입니다.`)
-        : `합격선은 ${Math.round(RL.LEVELUP_PASS_RATIO*100)}%예요. 약했던 유닛을 복습하고 다시 도전해요.`}</div>
+    <div class="verdict fail">
+      <div class="vhead"><span class="tag fail">재도전</span>
+        <span class="counter">${s.correct} / ${s.items.length} · ${wrongCount}개 틀림</span></div>
+      <div class="vbody">${RULES.EXAM_MAX_WRONG}개까지만 틀려야 통과예요. 틀린 걸 복습하고, <b>선생님이 다시 열어 주면</b> 재도전할 수 있어요.
+        <div class="misslist">${miss}</div></div>
     </div>
-    <div class="row"><button class="btn" id="lu-go">${passed && examLevel<MAX_LEVEL?'새 레벨 시작': passed?'완주!':'유닛으로 돌아가기'}</button></div>`;
-  $('lu-go').onclick = ()=>{ enterMain(); };
-  if(passed && examLevel>=MAX_LEVEL) $('nextstep').classList.remove('hidden');
+    <div class="row">
+      <button class="btn" id="ex-review-wrong">틀린 것 바로 복습 →</button>
+      <button class="btn ghost" id="ex-back">← 유닛 복습</button>
+    </div>`;
+  $('ex-review-wrong').onclick = startWrongReview;
+  $('ex-back').onclick = ()=>{ MEMBER.idx=0; loadUnit(0); };
+}
+
+/* ---- 오답 복습: 지난 시험에서 틀린 문제를 통문장으로 다시 연습 ---- */
+let wrState=null;
+function startWrongReview(){
+  const wrong = MEMBER.examWrong||[];
+  if(!wrong.length){ toast('복습할 오답이 없어요.'); return renderLevelComplete(); }
+  wrState = { i:0, items:wrong };
+  renderWrongReview();
+}
+function renderWrongReview(){
+  const s=wrState;
+  if(s.i>=s.items.length){
+    $('u-chapter').textContent='오답 복습 끝!';
+    $('u-unit').textContent='';
+    $('practice-area').innerHTML = `
+      <div class="verdict pass"><div class="vhead"><span class="tag pass">복습 완료</span></div>
+        <div class="vbody">틀렸던 문장을 다 다시 써 봤어요. 선생님이 시험을 열어 주면 재도전하세요.</div></div>
+      <div class="row"><button class="btn" id="wr-done">돌아가기</button></div>`;
+    $('wr-done').onclick = ()=>renderLevelComplete();
+    return;
+  }
+  const q=s.items[s.i];
+  $('u-chapter').textContent='오답 복습';
+  $('u-unit').textContent=`틀렸던 문장 다시 쓰기 (${s.i+1}/${s.items.length})`;
+  $('practice-area').innerHTML = `
+    <div class="counter" style="margin-bottom:6px">복습 ${s.i+1} / ${s.items.length}</div>
+    <div class="ko">${q.ko}</div>
+    <textarea id="wr-input" placeholder="다시 한 번 영어로 써 보세요"></textarea>
+    <div class="row"><button class="btn" id="wr-submit">채점하기</button></div>
+    <div id="wr-v"></div>`;
+  $('wr-input').focus();
+  $('wr-submit').onclick = async ()=>{
+    const v=$('wr-input').value.trim(); if(!v){ toast('한 문장 써 볼까요?'); return; }
+    $('wr-submit').disabled=true; $('wr-submit').textContent='채점 중…';
+    const ch = q.answer? {ko:q.ko, answer:q.answer} : null;
+    const g = await gradeSentence(q.ko, v, q.focus||'', MEMBER.level, ch);
+    logPractice();
+    const hints = (g.hints&&g.hints.length)? `<ul class="hintlist">${g.hints.map(h=>`<li>${h}</li>`).join('')}</ul>`:'';
+    $('wr-v').innerHTML = `
+      <div class="verdict ${g.pass?'pass':'fail'}">
+        <div class="vhead"><span class="tag ${g.pass?'pass':'fail'}">${g.pass?'통과':'다시'}</span><span class="counter">${g.score}점</span></div>
+        <div class="vbody">${g.feedbackKo||''}${hints}</div>
+        ${q.answer?`<div class="vbetter"><span class="lbl">정답 예시</span><span class="eng">${q.answer}</span></div>`:''}
+      </div>
+      <div class="row">${g.pass?'':`<button class="btn ghost" id="wr-retry">다시 쓰기</button>`}
+        <button class="btn" id="wr-next">${s.i+1<s.items.length?'다음 →':'복습 마치기'}</button></div>`;
+    if($('wr-retry')) $('wr-retry').onclick=()=>renderWrongReview();
+    $('wr-next').onclick=()=>{ s.i++; renderWrongReview(); };
+  };
 }
 
 /* ====================================================================
  *  일일 기록 + 스케줄러(프로그레스)
  * ==================================================================== */
 async function logPractice(){
-  const day = todayKey();
-  const ref = db.collection('members').doc(USER.uid).collection('log').doc(day);
-  await ref.set({ count: firebase.firestore.FieldValue.increment(1),
-                  ts: firebase.firestore.FieldValue.serverTimestamp() }, {merge:true});
-  await syncStreak();
+  try{
+    const day = todayKey();
+    const ref = db.collection('members').doc(USER.uid).collection('log').doc(day);
+    await ref.set({ count: firebase.firestore.FieldValue.increment(1),
+                    ts: firebase.firestore.FieldValue.serverTimestamp() }, {merge:true});
+    await syncStreak();
+  }catch(e){
+    // 기록 저장이 실패해도(예: 인덱스 미생성) 학습 흐름은 멈추지 않는다
+    console.warn('logPractice 건너뜀:', e.message);
+  }
 }
 
 async function syncStreak(){
@@ -916,7 +1269,7 @@ async function loadAdmin(){
     let members = mSnap.docs.map(d=>({ id:d.id, ...d.data() }));
     // 선생님 본인은 맨 아래로, 나머지는 레벨 높은 순
     members.sort((a,b)=>{
-      const at=( (a.email||'')===TEACHER_EMAIL )?1:0, bt=((b.email||'')===TEACHER_EMAIL)?1:0;
+      const at=(isTeacherEmail(a.email))?1:0, bt=(isTeacherEmail(b.email))?1:0;
       if(at!==bt) return at-bt;
       return (b.level||0)-(a.level||0);
     });
@@ -929,16 +1282,24 @@ async function loadAdmin(){
       const color = AV_COLORS[i%AV_COLORS.length];
       const initial = (m.name||m.email||'?').trim().charAt(0).toUpperCase();
       const lvlObj = lvl? CURRICULUM.find(l=>l.level===lvl) : null;
-      const isT = (m.email||'')===TEACHER_EMAIL;
+      const isT = isTeacherEmail(m.email);
+      const unitsDone = lvl && units.length>0 && passedInLevel>=units.length;
+      const permitOn = !!((m.examPermit||{})[lvl]);
+      const permitBtn = (lvl && !isT) ? (
+        permitOn
+          ? `<button class="btn" style="padding:4px 10px;background:#059669" data-permit="off" data-uid="${m.id}" data-name="${(m.name||'').replace(/"/g,'')}" data-lvl="${lvl}">✅ 시험 허가됨</button>`
+          : `<button class="btn ghost" style="padding:4px 10px${unitsDone?';border-color:#f97316;color:#c2410c':''}" data-permit="on" data-uid="${m.id}" data-name="${(m.name||'').replace(/"/g,'')}" data-lvl="${lvl}">${unitsDone?'🔓 시험 열어주기':'시험 허가'}</button>`
+      ) : '';
       return `<div class="member" style="align-items:center">
         <div class="avatar" style="background:${color}">${initial}</div>
         <div class="minfo" style="flex:1">
           <div class="mname">${m.name||'학습자'} ${isT?'<span class="muted small">(선생님)</span>':''}
             <span class="muted small">${m.email||''}</span></div>
-          <div class="muted small">${lvl? `LEVEL ${lvl} · ${lvlObj?lvlObj.stage:''} — 유닛 ${passedInLevel}/${units.length} 통과`
+          <div class="muted small">${lvl? `LEVEL ${lvl} · ${lvlObj?lvlObj.stage:''} — 유닛 ${passedInLevel}/${units.length} 통과${unitsDone?' · <b style="color:#c2410c">시험 대기</b>':''}`
             : '아직 배치고사 전'} · 연속 ${st.streak||0}일 · ${st.todayDone?'오늘 ✅':'오늘 ⬜'}</div>
         </div>
-        <div class="row" style="gap:6px;align-items:center">
+        <div class="row" style="gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+          ${permitBtn}
           <button class="btn ghost" style="padding:4px 10px" data-act="down" data-uid="${m.id}" data-name="${(m.name||'').replace(/"/g,'')}" data-lvl="${lvl||1}">▽</button>
           <b style="min-width:54px;text-align:center">L${lvl||'-'}</b>
           <button class="btn ghost" style="padding:4px 10px" data-act="up" data-uid="${m.id}" data-name="${(m.name||'').replace(/"/g,'')}" data-lvl="${lvl||0}">△</button>
@@ -951,11 +1312,28 @@ async function loadAdmin(){
         changeMemberLevel(b.dataset.uid, b.dataset.name, parseInt(b.dataset.lvl||'1',10), delta);
       };
     });
+    document.querySelectorAll('#admin-list [data-permit]').forEach(b=>{
+      b.onclick = ()=> toggleExamPermit(b.dataset.uid, b.dataset.name, parseInt(b.dataset.lvl,10), b.dataset.permit==='on');
+    });
   }catch(e){
     console.error(e);
     $('admin-list').innerHTML='<div class="muted small">불러오지 못했어요. 보안 규칙(선생님 읽기/쓰기 허용)이 게시됐는지 확인해 주세요.</div>';
   }
 }
+async function toggleExamPermit(uid, name, level, grant){
+  try{
+    const patch = {};
+    patch['examPermit.'+level] = grant ? true : firebase.firestore.FieldValue.delete();
+    await db.collection('members').doc(uid).set({ examPermit: { [level]: grant ? true : firebase.firestore.FieldValue.delete() } }, { merge:true });
+    if(uid===USER.uid){ MEMBER.examPermit = MEMBER.examPermit||{}; if(grant) MEMBER.examPermit[level]=true; else delete MEMBER.examPermit[level]; }
+    toast(grant ? `${name||'학습자'} · L${level} 시험을 열어 줬어요.` : `${name||'학습자'} · L${level} 시험 허가를 닫았어요.`);
+    loadAdmin();
+  }catch(e){
+    console.error(e);
+    toast('허가 변경 실패 — 보안 규칙에서 선생님 쓰기가 허용됐는지 확인해 주세요.');
+  }
+}
+
 async function changeMemberLevel(uid, name, currentLevel, delta){
   let next = (currentLevel||1) + delta;
   if(next < 1) next = 1;
