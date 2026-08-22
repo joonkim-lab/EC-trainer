@@ -2799,28 +2799,469 @@ const CURRICULUM = [
   },
   {
     level: 7, threshold: 2, stage: '정교', bookLabel: '2차 임계점',
-    theme: { ink:'#251c3f', accent:'#7c3aed', soft:'#f3edff' },
+    theme: { ink:'#1D1D1F', accent:'#5856D6', soft:'#EEEEFB' },
     title: '수동태', skill: '수동 쌉가능',
+    skillDesc: 'L7 클리어! 이제 뼈대를 뒤집어 "당한 쪽"을 주인공으로 세울 수 있어요. 누가 했는지보다 무엇이 됐는지를 말하는 힘이 붙었어요.',
     nextHint: 'LEVEL 8 · 준동사 + 다듬기',
     units: [
-      { id: 'L7-1', title: '수동태 기본 (be + p.p.)', focus: '수동태' },
-      { id: 'L7-2', title: '시제와 만난 수동태', focus: '시제별 수동태' },
-      { id: 'L7-3', title: 'get 수동태 · 굳어진 표현', focus: 'get p.p.' },
+
+      /* ---------------------------------------------------------------- */
+      {
+        id: 'L7-1',
+        title: '수동태 기본 (be + p.p.)',
+        tagline: '수동태 — "누가 했는지"보다 "무엇이 됐는지"를 말해요',
+        skeleton: '무엇이 + ~된다 (be + p.p.)',
+        focus: '수동태 기본 / be + p.p.',
+        card: {
+          achieve: '이걸 익히면 <b>당하는 쪽을 주인공</b>으로 세워 말할 수 있어요. <b>누가 했는지 모르거나, 중요하지 않을 때</b> 영어는 이렇게 말해요.',
+          howto: '한국어에 <b>"~된다 / ~당했다 / ~받았다"</b>가 보이면 수동태 신호예요. 만들기는 두 조각 — <b>be동사 + p.p.</b> p.p.는 L5 현재완료(have p.p.)에서 만난 그 모습 그대로예요. 단, <b>p.p.만 덜렁 쓰면 안 돼요</b> — be동사가 꼭 앞에 서요. 그리고 <b>"~에 의해(by)"는 꼭 필요할 때만</b> 붙여요.',
+          demo: {
+            ko: ['그 방은', '매일', '청소된다'],
+            steps: [
+              { q: '무엇이?',  ko: '그 방은 (당하는 쪽!)', en: 'The room' },
+              { q: '~된다?',   ko: '청소된다',            en: 'is cleaned' },
+              { q: '언제?',    ko: '매일',                en: 'every day' },
+            ],
+            answer: 'The room is cleaned every day.',
+            tip: '"~된다"가 신호. be동사 + p.p. 두 조각을 붙여요.',
+          },
+        },
+        practice: [
+          { ko: '영어는 전 세계에서 사용된다',
+            steps: [{ q:'무엇이?', en:'English', hint:'당하는 쪽을 주어로' }, { q:'~된다?', en:'is used', hint:'하나 → is + p.p.' }, { q:'어디에서?', en:'all over the world' }],
+            answer: 'English is used all over the world.' },
+          { ko: '그 다리는 1990년에 지어졌다',
+            steps: [{ q:'무엇이?', en:'The bridge' }, { q:'~되었다?', en:'was built', hint:'지나간 일 → was + p.p. (build → built)' }, { q:'언제?', en:'in 1990' }],
+            answer: 'The bridge was built in 1990.' },
+          { ko: '이 쿠키들은 우리 할머니에 의해 만들어졌다',
+            steps: [{ q:'무엇이?', en:'These cookies', hint:'여럿!' }, { q:'~되었다?', en:'were made', hint:'여럿 + 과거 → were + p.p.' }, { q:'누구에 의해?', en:'by my grandmother', hint:'만든 사람을 밝히고 싶을 때만 by' }],
+            answer: 'These cookies were made by my grandmother.' },
+        ],
+        challenges: [
+          { ko:'그 문은 밤에 잠긴다.', answer:'The door is locked at night.',
+            chunks:[{ lab:'무엇이', ko:'그 문은 (당하는 쪽)' }, { lab:'~된다', ko:'잠긴다 → is locked' }, { lab:'언제', ko:'밤에' }] },
+          { ko:'그 편지는 어제 보내졌다.', answer:'The letter was sent yesterday.' },
+          { ko:'이 노래는 많은 사람들에게 사랑받는다.', answer:'This song is loved by many people.' },
+          { ko:'그 창문이 어제 깨졌다.', answer:'The window was broken yesterday.' },
+          { ko:'저녁은 7시에 제공된다.', answer:'Dinner is served at 7.' },
+        ],
+        similar: [
+          { ko:'그 케이크는 오늘 아침에 구워졌다.', answer:'The cake was baked this morning.' },
+          { ko:'이 책은 한국어로 쓰여 있다.', answer:'This book is written in Korean.' },
+        ],
+      },
+
+      /* ---------------------------------------------------------------- */
+      {
+        id: 'L7-2',
+        title: '시제와 만난 수동태',
+        tagline: '시제별 수동태 — be동사만 옷을 갈아입어요',
+        skeleton: 'be(시제 변신) + p.p.(그대로)',
+        focus: '시제별 수동태 / will be · being · have been + p.p.',
+        card: {
+          achieve: '이걸 익히면 수동태를 <b>모든 시제</b>로 말할 수 있어요. "~될 것이다, ~되고 있다, ~되어 있다"까지 자유로워져요.',
+          howto: '규칙은 하나 — <b>p.p.는 그대로, be동사만 시제 옷을 갈아입어요.</b> 미래는 <b>will be + p.p.</b>, 지금 되는 중이면 <b>is being + p.p.</b>(L2 진행형 소환), 이미 다 되어 있으면 <b>has been + p.p.</b>(L5 현재완료 소환). 그리고 L5의 울타리 그대로 — <b>어제·지난주처럼 시점이 박히면 무조건 was/were + p.p.</b>',
+          demo: {
+            ko: ['그 도로는', '지금', '수리되고 있다'],
+            steps: [
+              { q: '무엇이?',   ko: '그 도로는',      en: 'The road' },
+              { q: '되는 중?',  ko: '수리되고 있다',   en: 'is being repaired' },
+              { q: '언제?',     ko: '지금',           en: 'now' },
+            ],
+            answer: 'The road is being repaired now.',
+            tip: '"~되고 있다" = 진행 + 수동 → is being + p.p.',
+          },
+        },
+        practice: [
+          { ko: '그 다리는 내년에 완공될 것이다',
+            steps: [{ q:'무엇이?', en:'The bridge' }, { q:'~될 것이다?', en:'will be finished', hint:'미래 → will be + p.p.' }, { q:'언제?', en:'next year' }],
+            answer: 'The bridge will be finished next year.' },
+          { ko: '내 자전거는 지금 수리되고 있다',
+            steps: [{ q:'무엇이?', en:'My bike' }, { q:'되는 중?', en:'is being repaired', hint:'"~되고 있다" → is being + p.p.' }, { q:'언제?', en:'now' }],
+            answer: 'My bike is being repaired now.' },
+          { ko: '그 방은 방금 청소되었다 (완료)',
+            steps: [{ q:'무엇이?', en:'The room' }, { q:'다 된 상태?', en:'has just been cleaned', hint:'막 끝난 일 → has been + p.p. (just는 has 뒤에)' }],
+            answer: 'The room has just been cleaned.' },
+        ],
+        challenges: [
+          { ko:'그 케이크는 내일 배달될 것이다.', answer:'The cake will be delivered tomorrow.',
+            chunks:[{ lab:'무엇이', ko:'그 케이크는' }, { lab:'~될 것이다', ko:'미래 → will be delivered' }, { lab:'언제', ko:'내일' }] },
+          { ko:'새 학교가 지금 지어지고 있다.', answer:'A new school is being built now.' },
+          { ko:'그 문제는 이미 해결되었다.', answer:'The problem has already been solved.' },
+          { ko:'그 창문들은 어제 닦였다.', answer:'The windows were cleaned yesterday.' },
+          { ko:'그 티켓들은 온라인에서 판매된다.', answer:'The tickets are sold online.' },
+        ],
+        similar: [
+          { ko:'그 벽은 다음 주에 페인트칠될 것이다.', answer:'The wall will be painted next week.' },
+          { ko:'그의 차는 지금 세차되고 있다.', answer:'His car is being washed now.' },
+        ],
+      },
+
+      /* ---------------------------------------------------------------- */
+      {
+        id: 'L7-3',
+        title: 'get 수동태 · 굳어진 표현',
+        tagline: 'get · 굳어진 표현 — 일상에서 더 자연스러운 수동태',
+        skeleton: 'get + p.p.  /  be + p.p. 굳은 표현',
+        focus: 'get p.p. / be born · be interested in · be asked to',
+        card: {
+          achieve: '이걸 익히면 일상 대화에서 <b>더 자연스러운 수동태</b>를 쓸 수 있어요. 원어민이 매일 쓰는 <b>굳어진 표현</b>도 손에 들어와요.',
+          howto: '<b>예상 못 한 일·사고</b>는 be 대신 <b>get + p.p.</b>로 말해요 — <b>get hurt</b>(다치다), <b>get stolen</b>(도난당하다), <b>get caught</b>(잡히다). 그리고 아예 수동태로 <b>굳어진 표현</b>들은 통째로 외워요 — <b>be born</b>(태어나다), <b>be interested in</b>(관심 있다), <b>be surprised at</b>(놀라다), <b>be asked/told to</b>(~하라고 요청받다/지시받다).',
+          demo: {
+            ko: ['그는', '축구를 하다가', '다쳤다'],
+            steps: [
+              { q: '누가?',    ko: '그는',            en: 'He' },
+              { q: '당했다?',  ko: '다쳤다 (사고!)',   en: 'got hurt' },
+              { q: '언제?',    ko: '축구를 하다가',    en: 'while playing soccer' },
+            ],
+            answer: 'He got hurt while playing soccer.',
+            tip: '예상 못 한 사고 → be 대신 get이 더 자연스러워요.',
+          },
+        },
+        practice: [
+          { ko: '내 우산을 지하철에서 도난당했다',
+            steps: [{ q:'무엇이?', en:'My umbrella', hint:'당한 물건을 주어로' }, { q:'당했다?', en:'got stolen', hint:'예상 못 한 일 → got + p.p.' }, { q:'어디에서?', en:'on the subway' }],
+            answer: 'My umbrella got stolen on the subway.' },
+          { ko: '나는 2012년에 태어났다',
+            steps: [{ q:'누가?', en:'I' }, { q:'태어났다?', en:'was born', hint:'굳어진 표현 — 통째로!' }, { q:'언제?', en:'in 2012' }],
+            answer: 'I was born in 2012.' },
+          { ko: '우리는 조용히 하라고 지시받았다',
+            steps: [{ q:'누가?', en:'We' }, { q:'지시받았다?', en:'were told', hint:'be told to ~ (지시받다)' }, { q:'무엇을 하라고?', en:'to be quiet' }],
+            answer: 'We were told to be quiet.' },
+        ],
+        challenges: [
+          { ko:'그의 전화기가 어제 도난당했다.', answer:'His phone got stolen yesterday.',
+            chunks:[{ lab:'무엇이', ko:'그의 전화기가' }, { lab:'당했다', ko:'예상 못 한 일 → got stolen' }, { lab:'언제', ko:'어제' }] },
+          { ko:'나는 역사에 관심이 있다.', answer:'I am interested in history.' },
+          { ko:'그녀는 서울에서 태어났다.', answer:'She was born in Seoul.' },
+          { ko:'그는 경기 중에 다쳤다.', answer:'He got hurt during the game.' },
+          { ko:'나는 창문을 닫으라고 요청받았다.', answer:'I was asked to close the window.' },
+        ],
+        similar: [
+          { ko:'나는 그 소식에 놀랐다.', answer:'I was surprised at the news.' },
+          { ko:'그 도둑은 경찰에게 잡혔다.', answer:'The thief got caught by the police.' },
+        ],
+      },
+
+      /* ---------------------------------------------------------------- */
+      {
+        id: 'L7-4',
+        title: '능동 vs 수동',
+        tagline: '갈라 쓰기 — 한 사람이 주인공이면 능동, 당한 쪽이 주인공이면 수동',
+        skeleton: '누가 + 한다  /  무엇이 + ~된다',
+        focus: '태 선택 / 능동태와 수동태 비교',
+        card: {
+          achieve: '이걸 익히면 <b>언제 능동으로 쓰고 언제 수동으로 쓸지</b> 고를 수 있어요. L7에서 가장 중요한 유닛이에요.',
+          howto: '둘 다 맞는 문장이에요. <b>행동한 사람이 주인공</b>이면 능동, <b>누가 했는지 모르거나 당한 쪽이 주인공</b>이면 수동이에요. 한국어가 알려줘요 — <b>"~했다"면 능동, "~됐다/~당했다/~받았다"면 수동.</b> 울타리 하나 — <b>happen(일어나다)처럼 스스로 벌어지는 일은 수동태로 쓰지 않아요.</b> "사고가 일어났다"는 The accident happened. 그대로예요.',
+          demo: {
+            ko: ['같은 일도', '두 가지로 말할 수 있어요'],
+            steps: [
+              { q: '능동',  ko: '우리 엄마가 이 쿠키를 만들었다',        en: 'My mom made these cookies.' },
+              { q: '수동',  ko: '이 쿠키는 우리 엄마에 의해 만들어졌다',  en: 'These cookies were made by my mom.' },
+            ],
+            answer: '둘 다 맞아요 — 주인공을 누구로 세우느냐의 차이',
+            tip: '"~했다"는 능동, "~됐다·당했다"는 수동. 한국어가 알려줘요.',
+          },
+        },
+        practice: [
+          { ko: '나는 어제 그 창문을 깼다 (한 사람이 분명!)',
+            steps: [{ q:'누가?', en:'I', hint:'"~했다" → 능동 그대로' }, { q:'했다?', en:'broke' }, { q:'무엇을?', en:'the window' }, { q:'언제?', en:'yesterday' }],
+            answer: 'I broke the window yesterday.' },
+          { ko: '그 창문은 어제 깨졌다 (누가 했는지 모름)',
+            steps: [{ q:'무엇이?', en:'The window', hint:'"~됐다" → 수동으로' }, { q:'~되었다?', en:'was broken' }, { q:'언제?', en:'yesterday' }],
+            answer: 'The window was broken yesterday.' },
+          { ko: '그 사고는 지난밤에 일어났다',
+            steps: [{ q:'무엇이?', en:'The accident' }, { q:'일어났다?', en:'happened', hint:'happen은 스스로 벌어지는 일 → 수동태 금지!' }, { q:'언제?', en:'last night' }],
+            answer: 'The accident happened last night.' },
+        ],
+        challenges: [
+          { ko:'그 도둑은 어젯밤에 잡혔다.', answer:'The thief was caught last night.',
+            chunks:[{ lab:'판단', ko:'"잡혔다" → 수동' }, { lab:'무엇이', ko:'그 도둑은' }, { lab:'~되었다', ko:'was caught' }] },
+          { ko:'경찰이 그 도둑을 잡았다.', answer:'The police caught the thief.' },
+          { ko:'그 콘서트는 취소되었다.', answer:'The concert was canceled.' },
+          { ko:'그 사고는 오늘 아침에 일어났다.', answer:'The accident happened this morning.' },
+          { ko:'쌀은 한국에서 재배된다.', answer:'Rice is grown in Korea.' },
+        ],
+        similar: [
+          { ko:'그녀가 어제 저녁을 요리했다.', answer:'She cooked dinner yesterday.' },
+          { ko:'그 경기는 비 때문에 취소되었다.', answer:'The game was canceled because of the rain.' },
+        ],
+      },
     ],
-    exam: { passScore: RULES.EXAM_PASS, total: RULES.EXAM_TOTAL, questions: [] },  // AI가 매번 새로 출제
+
+    /* ── L7 총정리 (AI가 20문제 새로 출제. 아래는 폴백) ── */
+    exam: {
+      passScore: RULES.EXAM_PASS,
+      total: RULES.EXAM_TOTAL,
+      questions: [
+        { ko:'그 문은 밤에 잠긴다.',                 answer:'The door is locked at night.',          from:'L7-1' },
+        { ko:'그 편지는 어제 보내졌다.',             answer:'The letter was sent yesterday.',        from:'L7-1' },
+        { ko:'이 노래는 많은 사람들에게 사랑받는다.', answer:'This song is loved by many people.',    from:'L7-1' },
+        { ko:'그 케이크는 내일 배달될 것이다.',       answer:'The cake will be delivered tomorrow.',  from:'L7-2' },
+        { ko:'새 학교가 지금 지어지고 있다.',         answer:'A new school is being built now.',      from:'L7-2' },
+        { ko:'그 문제는 이미 해결되었다.',            answer:'The problem has already been solved.',  from:'L7-2' },
+        { ko:'그의 전화기가 어제 도난당했다.',        answer:'His phone got stolen yesterday.',       from:'L7-3' },
+        { ko:'그녀는 서울에서 태어났다.',             answer:'She was born in Seoul.',                from:'L7-3' },
+        { ko:'경찰이 그 도둑을 잡았다.',              answer:'The police caught the thief.',          from:'L7-4' },
+        { ko:'그 사고는 오늘 아침에 일어났다.',       answer:'The accident happened this morning.',   from:'L7-4' },
+      ],
+    },
   },
   {
     level: 8, threshold: 2, stage: '정교', bookLabel: '2차 임계점',
-    theme: { ink:'#251c3f', accent:'#7c3aed', soft:'#f3edff' },
+    theme: { ink:'#1D1D1F', accent:'#5856D6', soft:'#EEEEFB' },
     title: '준동사 + 다듬기', skill: '정교 쌉가능',
+    skillDesc: 'L8 클리어 — 2차 임계점 완주! 동사 두 개가 나와도 겁나지 않고, 묻고·꾸미고·다듬는 것까지 정교해졌어요.',
     nextHint: 'LEVEL 9 · 뉘앙스 조동사',
     units: [
-      { id: 'L8-1', title: 'to부정사 (~하는 것 / ~하려고)', focus: 'to부정사' },
-      { id: 'L8-2', title: '동명사', focus: '동명사' },
-      { id: 'L8-3', title: '분사 (~하는 · ~된)', focus: '현재·과거분사' },
-      { id: 'L8-4', title: '의문사 의문문 · 다양한 부정', focus: 'wh-의문문' },
+
+      /* ---------------------------------------------------------------- */
+      {
+        id: 'L8-1',
+        title: 'to부정사 (~하는 것 / ~하려고)',
+        tagline: 'to부정사 — 진짜 동사는 하나, 뒤 동사엔 to 옷을 입혀요',
+        skeleton: '누가 + 한다 + to 동사원형',
+        focus: 'to부정사 / want·decide·hope to · 목적의 to',
+        card: {
+          achieve: '이걸 익히면 한 문장에 <b>동사가 두 개</b> 나와도 만들 수 있어요. "~하고 싶다, ~하기로 했다, ~하려고"가 전부 열려요.',
+          howto: '"나는 <b>원한다</b> + <b>마시는 것을</b>"처럼 동사가 두 개면 — <b>진짜 동사는 하나</b>예요. 뒤 동사에는 <b>to 옷</b>을 입혀요. 한국어 신호는 둘: <b>"~하는 것을/~하기로"</b>(want to·decide to·hope to), <b>"~하려고/~하기 위해"</b>(목적). 울타리 — <b>to 뒤는 무조건 동사원형</b>이에요 (to went ❌, to going ❌).',
+          demo: {
+            ko: ['나는', '의사가 되는 것을', '원한다'],
+            steps: [
+              { q: '누가?',    ko: '나는',                    en: 'I' },
+              { q: '한다?',    ko: '원한다 (진짜 동사!)',       en: 'want' },
+              { q: '무엇을?',  ko: '의사가 되는 것을 (to 옷)',  en: 'to be a doctor' },
+            ],
+            answer: 'I want to be a doctor.',
+            tip: '동사 두 개 → 뒤 동사에 to 옷. "~하는 것을"이 신호예요.',
+          },
+        },
+        practice: [
+          { ko: '나는 영어를 배우기로 결심했다',
+            steps: [{ q:'누가?', en:'I' }, { q:'했다?', en:'decided', hint:'진짜 동사는 decided 하나' }, { q:'무엇을?', en:'to learn English', hint:'"~하기로" → to + 동사원형' }],
+            answer: 'I decided to learn English.' },
+          { ko: '그녀는 가수가 되기를 희망한다',
+            steps: [{ q:'누가?', en:'She' }, { q:'한다?', en:'hopes', hint:'한 명 → hopes' }, { q:'무엇을?', en:'to become a singer' }],
+            answer: 'She hopes to become a singer.' },
+          { ko: '나는 책을 사려고 서점에 갔다',
+            steps: [{ q:'누가?', en:'I' }, { q:'했다?', en:'went' }, { q:'어디에?', en:'to the bookstore' }, { q:'왜?', en:'to buy a book', hint:'"~하려고" → 목적의 to' }],
+            answer: 'I went to the bookstore to buy a book.' },
+        ],
+        challenges: [
+          { ko:'나는 물을 마시고 싶다.', answer:'I want to drink water.',
+            chunks:[{ lab:'누가', ko:'나는' }, { lab:'한다', ko:'원한다 (진짜 동사)' }, { lab:'무엇을', ko:'마시는 것을 → to drink' }, { lab:'무엇을2', ko:'물을' }] },
+          { ko:'우리는 일찍 떠나기로 결정했다.', answer:'We decided to leave early.' },
+          { ko:'그는 시험에 합격하기를 희망한다.', answer:'He hopes to pass the exam.' },
+          { ko:'나는 표를 사려고 줄을 섰다.', answer:'I stood in line to buy a ticket.' },
+          { ko:'그녀는 살을 빼기 위해 매일 운동한다.', answer:'She exercises every day to lose weight.' },
+        ],
+        similar: [
+          { ko:'나는 좀 쉬는 것이 필요하다.', answer:'I need to take a rest.' },
+          { ko:'그는 나를 도와주려고 왔다.', answer:'He came to help me.' },
+        ],
+      },
+
+      /* ---------------------------------------------------------------- */
+      {
+        id: 'L8-2',
+        title: '동명사 (-ing)',
+        tagline: '동명사 — 동사에 -ing 옷을 입히면 명사가 돼요',
+        skeleton: '~하는 것(-ing) + 은/을',
+        focus: '동명사 / 주어 자리 · enjoy·finish 뒤 · 전치사 뒤',
+        card: {
+          achieve: '이걸 익히면 <b>"~하는 것"을 -ing로도</b> 만들 수 있어요. 주어 자리에도, 동사 뒤에도, 전치사 뒤에도 쓸 수 있어요.',
+          howto: '동사에 <b>-ing 옷</b>을 입히면 명사가 돼요. 자리는 셋 — ① <b>주어 자리</b>(Reading books is fun — L6에서 배운 대로 <b>-ing 주어는 하나 취급 → is</b>), ② <b>enjoy·finish·keep 뒤</b>, ③ <b>전치사 뒤</b>(good at swimming). 울타리 — <b>전치사 뒤에는 to 동사원형 금지, 무조건 -ing</b>예요 (good at to swim ❌).',
+          demo: {
+            ko: ['나는', '음악 듣는 것을', '즐긴다'],
+            steps: [
+              { q: '누가?',    ko: '나는',                       en: 'I' },
+              { q: '한다?',    ko: '즐긴다 (진짜 동사!)',          en: 'enjoy' },
+              { q: '무엇을?',  ko: '음악 듣는 것을 (-ing 옷)',     en: 'listening to music' },
+            ],
+            answer: 'I enjoy listening to music.',
+            tip: 'enjoy 뒤에는 -ing 옷. "~하는 것을"을 -ing로 만들어요.',
+          },
+        },
+        practice: [
+          { ko: '영어를 공부하는 것은 재미있다',
+            steps: [{ q:'무엇이?', en:'Studying English', hint:'-ing 주어 (하나 취급!)' }, { q:'어떠하다?', en:'is fun', hint:'L6 수 일치 — -ing 주어 → is' }],
+            answer: 'Studying English is fun.' },
+          { ko: '그는 숙제 하는 것을 끝냈다',
+            steps: [{ q:'누가?', en:'He' }, { q:'했다?', en:'finished', hint:'finish 뒤엔 -ing' }, { q:'무엇을?', en:'doing his homework' }],
+            answer: 'He finished doing his homework.' },
+          { ko: '그녀는 그림 그리기를 잘한다',
+            steps: [{ q:'누가?', en:'She' }, { q:'어떠하다?', en:'is good at', hint:'잘한다 → be good at' }, { q:'무엇을?', en:'drawing', hint:'전치사 at 뒤 → 무조건 -ing' }],
+            answer: 'She is good at drawing.' },
+        ],
+        challenges: [
+          { ko:'나는 요리하는 것을 즐긴다.', answer:'I enjoy cooking.',
+            chunks:[{ lab:'누가', ko:'나는' }, { lab:'한다', ko:'즐긴다' }, { lab:'무엇을', ko:'요리하는 것을 → cooking' }] },
+          { ko:'아침에 걷는 것은 건강에 좋다.', answer:'Walking in the morning is good for health.' },
+          { ko:'그는 방 청소하는 것을 끝냈다.', answer:'He finished cleaning his room.' },
+          { ko:'나는 수영을 잘한다.', answer:'I am good at swimming.' },
+          { ko:'내 취미는 사진 찍는 것이다.', answer:'My hobby is taking pictures.' },
+        ],
+        similar: [
+          { ko:'나는 노래 부르는 것을 즐긴다.', answer:'I enjoy singing.' },
+          { ko:'그녀는 요리를 잘한다.', answer:'She is good at cooking.' },
+        ],
+      },
+
+      /* ---------------------------------------------------------------- */
+      {
+        id: 'L8-3',
+        title: 'to파 vs -ing파',
+        tagline: '갈라 쓰기 — 어느 옷을 입힐지는 앞 동사가 정해요',
+        skeleton: 'want류 + to ~  /  enjoy류 + -ing',
+        focus: '준동사 선택 / 동사 궁합 (want to vs enjoy -ing)',
+        card: {
+          achieve: '이걸 익히면 <b>to를 입힐지 -ing를 입힐지</b> 고를 수 있어요. L8에서 가장 중요한 유닛이에요.',
+          howto: '내가 고르는 게 아니라 <b>앞 동사가 정해요 (궁합!)</b>. <b>to파</b> — want·hope·decide·plan·need (앞으로 할 일 느낌). <b>-ing파</b> — enjoy·finish·keep·give up (하던 일 느낌). <b>둘 다 파</b> — like·love·start·begin (뜻 차이 거의 없음). 울타리 — <b>enjoy to ❌, want -ing ❌.</b> 궁합이 틀리면 문장이 무너져요.',
+          demo: {
+            ko: ['같은 "축구"도', '앞 동사 따라 옷이 달라요'],
+            steps: [
+              { q: 'to파',    ko: '나는 축구 하기를 원한다',      en: 'I want to play soccer.' },
+              { q: '-ing파',  ko: '나는 축구 하는 것을 즐긴다',    en: 'I enjoy playing soccer.' },
+            ],
+            answer: '앞 동사가 옷을 정해요 — want는 to파, enjoy는 -ing파',
+            tip: 'to파: want·hope·decide·plan / -ing파: enjoy·finish·keep',
+          },
+        },
+        practice: [
+          { ko: '나는 유학 가기로 계획했다',
+            steps: [{ q:'누가?', en:'I' }, { q:'했다?', en:'planned', hint:'plan은 to파!' }, { q:'무엇을?', en:'to study abroad' }],
+            answer: 'I planned to study abroad.' },
+          { ko: '그는 계속 웃었다',
+            steps: [{ q:'누가?', en:'He' }, { q:'했다?', en:'kept', hint:'keep은 -ing파! (keep → kept)' }, { q:'무엇을?', en:'laughing' }],
+            answer: 'He kept laughing.' },
+          { ko: '아기가 울기 시작했다',
+            steps: [{ q:'누가?', en:'The baby' }, { q:'했다?', en:'started', hint:'start는 둘 다 파 — to cry도 crying도 OK' }, { q:'무엇을?', en:'to cry' }],
+            answer: 'The baby started to cry.' },
+        ],
+        challenges: [
+          { ko:'나는 새 자전거를 사기를 원한다.', answer:'I want to buy a new bike.',
+            chunks:[{ lab:'판단', ko:'want → to파' }, { lab:'누가', ko:'나는' }, { lab:'한다', ko:'원한다' }, { lab:'무엇을', ko:'사는 것을 → to buy' }] },
+          { ko:'그녀는 피아노 치는 것을 즐긴다.', answer:'She enjoys playing the piano.' },
+          { ko:'우리는 내일 만나기로 계획했다.', answer:'We planned to meet tomorrow.' },
+          { ko:'그는 게임하는 것을 포기했다.', answer:'He gave up playing games.' },
+          { ko:'눈이 내리기 시작했다.', answer:'It started to snow.' },
+        ],
+        similar: [
+          { ko:'나는 밤에 공부하기로 결심했다.', answer:'I decided to study at night.' },
+          { ko:'그녀는 계속 이야기했다.', answer:'She kept talking.' },
+        ],
+      },
+
+      /* ---------------------------------------------------------------- */
+      {
+        id: 'L8-4',
+        title: '분사 (~하는 · ~된)',
+        tagline: '분사 — 동사에 옷을 입혀 꾸밈말로 써요',
+        skeleton: '-ing/p.p. + 명사  /  명사 + -ing/p.p. 덩어리',
+        focus: '현재분사·과거분사 / 명사 꾸미기',
+        card: {
+          achieve: '이걸 익히면 <b>동사로 명사를 꾸밀 수</b> 있어요. "울고 있는 아기, 깨진 창문"처럼 그림이 살아나는 꾸미기예요.',
+          howto: '동사에 옷을 입혀 꾸밈말을 만들어요. 판단은 <b>L7 방식 그대로</b> — 그 명사가 <b>하는 쪽이면 -ing</b>(울고 있는 아기), <b>당하는 쪽이면 p.p.</b>(깨진 창문). 자리는 <b>L4 꾸미기 규칙 그대로</b> — <b>한 단어면 명사 앞</b>(the crying baby), <b>덩어리면 명사 뒤</b>(the girl singing on the stage).',
+          demo: {
+            ko: ['잠자고 있는', '아기를', '봐'],
+            steps: [
+              { q: '꾸밈말?',  ko: '잠자고 있는 (하는 쪽 → -ing)', en: 'sleeping' },
+              { q: '무엇을?',  ko: '아기를',                      en: 'the sleeping baby' },
+              { q: '한다?',    ko: '봐',                          en: 'Look at' },
+            ],
+            answer: 'Look at the sleeping baby.',
+            tip: '하는 쪽 → -ing, 당하는 쪽 → p.p. 한 단어면 명사 앞!',
+          },
+        },
+        practice: [
+          { ko: '무대에서 노래하고 있는 그 소녀는 내 친구다',
+            steps: [{ q:'핵심 주어?', en:'The girl', hint:'꾸밈 덩어리는 뒤로' }, { q:'꾸밈 덩어리?', en:'singing on the stage', hint:'하는 쪽 → -ing' }, { q:'어떠하다?', en:'is my friend', hint:'주어는 girl 하나 → is' }],
+            answer: 'The girl singing on the stage is my friend.' },
+          { ko: '그는 깨진 창문을 고쳤다',
+            steps: [{ q:'누가?', en:'He' }, { q:'했다?', en:'fixed' }, { q:'무엇을?', en:'the broken window', hint:'당하는 쪽 → p.p. (한 단어 → 명사 앞)' }],
+            answer: 'He fixed the broken window.' },
+          { ko: '나는 영어로 쓰인 책을 읽었다',
+            steps: [{ q:'누가?', en:'I' }, { q:'했다?', en:'read' }, { q:'무엇을?', en:'a book written in English', hint:'덩어리 → 명사 뒤 (당하는 쪽 → written)' }],
+            answer: 'I read a book written in English.' },
+        ],
+        challenges: [
+          { ko:'저 울고 있는 아기를 봐.', answer:'Look at the crying baby.',
+            chunks:[{ lab:'판단', ko:'아기가 하는 쪽 → -ing' }, { lab:'꾸밈말', ko:'울고 있는 → crying' }, { lab:'자리', ko:'한 단어 → 명사 앞' }] },
+          { ko:'그는 삶은 달걀을 먹었다.', answer:'He ate a boiled egg.' },
+          { ko:'벤치에 앉아 있는 그 남자는 우리 아빠다.', answer:'The man sitting on the bench is my dad.' },
+          { ko:'나는 중고차를 샀다.', answer:'I bought a used car.' },
+          { ko:'프랑스에서 만들어진 그 가방은 비싸다.', answer:'The bag made in France is expensive.' },
+        ],
+        similar: [
+          { ko:'떨어지는 나뭇잎들을 봐.', answer:'Look at the falling leaves.' },
+          { ko:'그녀는 도난당한 지갑을 찾았다.', answer:'She found the stolen wallet.' },
+        ],
+      },
+
+      /* ---------------------------------------------------------------- */
+      {
+        id: 'L8-5',
+        title: '의문사 의문문 · 다양한 부정',
+        tagline: '다듬기 — 뭐가·어디서·왜까지 묻고, 부정도 골라 써요',
+        skeleton: '의문사 + (L3 물음 뼈대)  /  never · not always',
+        focus: 'wh-의문문 / never · 부분부정',
+        card: {
+          achieve: '이걸 익히면 Yes/No를 넘어 <b>"뭐? 어디서? 언제? 왜?"</b>까지 물을 수 있고, 부정도 <b>"한 번도 안 / 항상 ~인 건 아냐"</b>로 세밀해져요.',
+          howto: '만들기는 간단 — <b>궁금한 것(의문사)을 맨 앞에</b> 세우고, 뒤는 <b>L3 의문문 뼈대 그대로</b>예요 (What + do you like?). 울타리 — <b>did를 썼으면 동사는 원형</b>(When did she left ❌). 부정 다듬기 — <b>never</b>(한 번도 안, not 없이 혼자 씀), <b>not always</b>(항상 ~인 건 아니야).',
+          demo: {
+            ko: ['너는', '무엇을', '원하니?'],
+            steps: [
+              { q: '궁금한 것?',  ko: '무엇을 → 맨 앞으로!',  en: 'What' },
+              { q: '물음 뼈대?',  ko: 'L3 그대로',           en: 'do you' },
+              { q: '한다?',      ko: '원하다',              en: 'want' },
+            ],
+            answer: 'What do you want?',
+            tip: '의문사 먼저, 나머지는 L3 의문문 그대로 이어요.',
+          },
+        },
+        practice: [
+          { ko: '너는 왜 영어를 공부하니?',
+            steps: [{ q:'궁금한 것?', en:'Why', hint:'이유 → Why 맨 앞' }, { q:'물음 뼈대?', en:'do you' }, { q:'한다?', en:'study English' }],
+            answer: 'Why do you study English?' },
+          { ko: '그녀는 언제 떠났니?',
+            steps: [{ q:'궁금한 것?', en:'When' }, { q:'물음 뼈대?', en:'did she', hint:'과거 물음 → did' }, { q:'한다?', en:'leave', hint:'did를 썼으니 원형! (left ❌)' }],
+            answer: 'When did she leave?' },
+          { ko: '나는 아침을 한 번도 거르지 않는다',
+            steps: [{ q:'누가?', en:'I' }, { q:'한 번도 안?', en:'never skip', hint:'never는 동사 앞, not 없이 혼자!' }, { q:'무엇을?', en:'breakfast' }],
+            answer: 'I never skip breakfast.' },
+        ],
+        challenges: [
+          { ko:'너는 어디에 사니?', answer:'Where do you live?',
+            chunks:[{ lab:'궁금한 것', ko:'어디 → Where 맨 앞' }, { lab:'물음 뼈대', ko:'do you' }, { lab:'한다', ko:'살다' }] },
+          { ko:'그는 언제 도착했니?', answer:'When did he arrive?' },
+          { ko:'너는 어떻게 학교에 가니?', answer:'How do you go to school?' },
+          { ko:'나는 그 영화를 한 번도 본 적이 없다.', answer:'I have never seen the movie.' },
+          { ko:'그녀는 항상 바쁜 것은 아니다.', answer:'She is not always busy.' },
+        ],
+        similar: [
+          { ko:'너는 왜 늦었니?', answer:'Why were you late?' },
+          { ko:'너는 무엇을 먹고 싶니?', answer:'What do you want to eat?' },
+        ],
+      },
     ],
-    exam: { passScore: RULES.EXAM_PASS, total: RULES.EXAM_TOTAL, questions: [] },  // AI가 매번 새로 출제
+
+    /* ── L8 총정리 (AI가 20문제 새로 출제. 아래는 폴백) ── */
+    exam: {
+      passScore: RULES.EXAM_PASS,
+      total: RULES.EXAM_TOTAL,
+      questions: [
+        { ko:'나는 물을 마시고 싶다.',             answer:'I want to drink water.',                 from:'L8-1' },
+        { ko:'그녀는 살을 빼기 위해 매일 운동한다.', answer:'She exercises every day to lose weight.', from:'L8-1' },
+        { ko:'나는 요리하는 것을 즐긴다.',          answer:'I enjoy cooking.',                       from:'L8-2' },
+        { ko:'나는 수영을 잘한다.',                answer:'I am good at swimming.',                 from:'L8-2' },
+        { ko:'우리는 내일 만나기로 계획했다.',      answer:'We planned to meet tomorrow.',           from:'L8-3' },
+        { ko:'그는 게임하는 것을 포기했다.',        answer:'He gave up playing games.',              from:'L8-3' },
+        { ko:'그는 삶은 달걀을 먹었다.',            answer:'He ate a boiled egg.',                   from:'L8-4' },
+        { ko:'벤치에 앉아 있는 그 남자는 우리 아빠다.', answer:'The man sitting on the bench is my dad.', from:'L8-4' },
+        { ko:'그는 언제 도착했니?',                answer:'When did he arrive?',                    from:'L8-5' },
+        { ko:'나는 그 영화를 한 번도 본 적이 없다.', answer:'I have never seen the movie.',           from:'L8-5' },
+      ],
+    },
   },
   {
     level: 9, threshold: 3, stage: '세련', bookLabel: '3차 임계점',
