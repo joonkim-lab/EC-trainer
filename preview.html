@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>쌉가능 · 커리큘럼 미리보기</title>
+<style>
+  :root{
+    --paper:#F5F5F7; --card:#FFF; --ink:#1D1D1F; --muted:#6E6E73; --line:#D2D2D7;
+    --ok:#1A7F4B; --no:#C4342B;
+    --accent:#5856D6; --deep:#4644B8; --soft:#EEEEFB;
+    --r:18px; --r-sm:14px;
+    --shadow:0 1px 2px rgba(0,0,0,.04); --shadow-lg:0 8px 30px rgba(0,0,0,.08);
+  }
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"Apple SD Gothic Neo","Segoe UI",Roboto,sans-serif;
+    background:var(--paper); color:var(--ink); line-height:1.6; padding:24px 16px 80px;
+  }
+  .wrap{ max-width:760px; margin:0 auto; }
+  .kicker{ font-size:13px; font-weight:700; color:var(--accent); letter-spacing:.4px; }
+  h1{ font-size:24px; margin:4px 0 2px; }
+  .sub{ color:var(--muted); font-size:14px; margin-bottom:18px; }
+  .chips{ display:flex; flex-wrap:wrap; gap:8px; margin-bottom:22px; }
+  .chip{
+    border:1px solid var(--line); background:var(--card); border-radius:999px;
+    padding:7px 14px; font-size:14px; font-weight:600; cursor:pointer; color:var(--ink);
+  }
+  .chip:disabled{ color:#C7C7CC; cursor:not-allowed; }
+  .chip.on{ background:var(--accent); border-color:var(--accent); color:#fff; }
+  .lvhead{
+    background:var(--card); border-radius:var(--r); box-shadow:var(--shadow);
+    padding:18px 20px; margin-bottom:18px; border-top:4px solid var(--accent);
+  }
+  .lvhead h2{ font-size:20px; }
+  .lvhead .meta{ color:var(--muted); font-size:13px; }
+  .unit{
+    background:var(--card); border-radius:var(--r); box-shadow:var(--shadow);
+    padding:20px; margin-bottom:20px;
+  }
+  .unit>.uid{ font-size:12px; font-weight:700; color:var(--accent); }
+  .unit>h3{ font-size:18px; margin:2px 0 2px; }
+  .tagline{ font-size:14px; color:var(--muted); margin-bottom:4px; }
+  .skeleton{
+    display:inline-block; background:var(--soft); color:var(--deep);
+    font-size:13px; font-weight:700; border-radius:8px; padding:3px 10px; margin:6px 0 12px;
+  }
+  .sec{ margin-top:14px; }
+  .sec .lab{
+    font-size:12px; font-weight:800; color:var(--muted); letter-spacing:.6px;
+    text-transform:uppercase; margin-bottom:6px;
+  }
+  .cardbox{ background:var(--soft); border-radius:var(--r-sm); padding:14px 16px; font-size:14.5px; }
+  .cardbox p+p{ margin-top:8px; }
+  .demo{ border:1px solid var(--line); border-radius:var(--r-sm); padding:12px 14px; margin-top:8px; font-size:14px; }
+  .demo .ko-src{ font-weight:700; margin-bottom:6px; }
+  .step{ display:flex; gap:8px; padding:3px 0; }
+  .step .q{ min-width:86px; color:var(--deep); font-weight:700; }
+  .step .en{ font-weight:600; }
+  .ans{ margin-top:8px; font-weight:800; color:var(--ok); }
+  .tip{ margin-top:4px; font-size:13px; color:var(--muted); }
+  .item{ border-top:1px solid var(--line); padding:10px 0; font-size:14.5px; }
+  .item:first-of-type{ border-top:none; }
+  .item .ko{ font-weight:700; }
+  .hint{ color:var(--muted); font-size:13px; }
+  .chunks{ font-size:13px; color:var(--deep); background:var(--soft); border-radius:8px; padding:6px 10px; margin-top:4px; display:inline-block; }
+  .en-ans{ color:var(--ok); font-weight:700; }
+  .empty{ background:var(--card); border-radius:var(--r); padding:30px; text-align:center; color:var(--muted); box-shadow:var(--shadow); }
+  .exam-q{ display:flex; justify-content:space-between; gap:12px; font-size:14px; padding:6px 0; border-top:1px solid var(--line); }
+  .exam-q:first-of-type{ border-top:none; }
+  .from{ color:var(--muted); font-size:12px; white-space:nowrap; }
+  .foot{ text-align:center; color:var(--muted); font-size:12px; margin-top:30px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">이제 영어, 쌉가능 · 집필용 미리보기</div>
+  <h1>커리큘럼 미리보기</h1>
+  <div class="sub">로그인 없이 curriculum.js 내용을 그대로 봅니다. 정답·힌트 전부 공개 (학생 화면 아님)</div>
+  <div class="chips" id="chips"></div>
+  <div id="content"></div>
+  <div class="foot">preview.html — 로컬 확인용 (배포 안 해도 되는 파일) · made by coldwater1042</div>
+</div>
+
+<script src="curriculum.js"></script>
+<script>
+const $c = document.getElementById('content');
+const $chips = document.getElementById('chips');
+let cur = 7;
+
+function esc(s){ return String(s??''); }
+
+function chips(){
+  $chips.innerHTML = '';
+  for(const lv of CURRICULUM){
+    const b = document.createElement('button');
+    b.className = 'chip' + (lv.level===cur ? ' on' : '');
+    b.textContent = 'L' + lv.level;
+    const ready = isLevelReady(lv.level);
+    if(!ready){ b.disabled = true; b.title = '아직 골격만'; b.textContent += ' ·'; }
+    b.onclick = ()=>{ cur = lv.level; render(); };
+    $chips.appendChild(b);
+  }
+}
+
+function stepRow(s){
+  return `<div class="step"><span class="q">${esc(s.q)}</span>
+    <span>${esc(s.ko??'')} ${s.en?`<span class="en">→ ${esc(s.en)}</span>`:''}
+    ${s.hint?`<div class="hint">💡 ${esc(s.hint)}</div>`:''}</span></div>`;
+}
+
+function render(){
+  chips();
+  const lv = getLevel(cur);
+  const accent = (lv.theme&&lv.theme.accent)||'#5856D6';
+  const soft = (lv.theme&&lv.theme.soft)||'#EEEEFB';
+  document.documentElement.style.setProperty('--accent', accent);
+  document.documentElement.style.setProperty('--soft', soft);
+  if(!isLevelReady(cur)){
+    $c.innerHTML = `<div class="empty">L${cur} <b>${esc(lv.title)}</b> — 아직 골격만 있어요.</div>`;
+    return;
+  }
+  let h = `<div class="lvhead">
+    <div class="meta">${esc(lv.bookLabel)} · ${esc(lv.stage)}</div>
+    <h2>LEVEL ${lv.level} · ${esc(lv.title)}</h2>
+    <div class="meta">스킬: ${esc(lv.skill)}${lv.skillDesc?` — ${esc(lv.skillDesc)}`:''}</div>
+  </div>`;
+
+  for(const u of lv.units){
+    h += `<div class="unit">
+      <div class="uid">${esc(u.id)}</div>
+      <h3>${esc(u.title)}</h3>
+      <div class="tagline">${esc(u.tagline)}</div>
+      <span class="skeleton">${esc(u.skeleton)}</span>
+
+      <div class="sec"><div class="lab">익힘카드</div>
+        <div class="cardbox">
+          <p>${u.card.achieve}</p>
+          <p>${u.card.howto}</p>
+        </div>
+        <div class="demo">
+          <div class="ko-src">📝 ${(u.card.demo.ko||[]).join(' / ')}</div>
+          ${(u.card.demo.steps||[]).map(stepRow).join('')}
+          <div class="ans">→ ${esc(u.card.demo.answer)}</div>
+          ${u.card.demo.tip?`<div class="tip">💡 ${esc(u.card.demo.tip)}</div>`:''}
+        </div>
+      </div>
+
+      <div class="sec"><div class="lab">연습 (${u.practice.length})</div>
+        ${u.practice.map(p=>`<div class="item">
+          <div class="ko">${esc(p.ko)}</div>
+          ${(p.steps||[]).map(stepRow).join('')}
+          <div class="en-ans">→ ${esc(p.answer)}</div>
+        </div>`).join('')}
+      </div>
+
+      <div class="sec"><div class="lab">실전 통문장 (${u.challenges.length}) · ${RULES.PASS_SCORE}점 게이트</div>
+        ${u.challenges.map(ch=>`<div class="item">
+          <div class="ko">${esc(ch.ko)} <span class="en-ans">→ ${esc(ch.answer)}</span></div>
+          ${ch.chunks?`<div class="chunks">[끊어보기] ${ch.chunks.map(k=>`${esc(k.lab)}: ${esc(k.ko)}`).join(' · ')}</div>`:''}
+        </div>`).join('')}
+      </div>
+
+      <div class="sec"><div class="lab">유사문장 (${(u.similar||[]).length})</div>
+        ${(u.similar||[]).map(s=>`<div class="item"><div class="ko">${esc(s.ko)} <span class="en-ans">→ ${esc(s.answer)}</span></div></div>`).join('')}
+      </div>
+    </div>`;
+  }
+
+  const qs = (lv.exam&&lv.exam.questions)||[];
+  h += `<div class="unit"><div class="uid">EXAM</div><h3>레벨 시험 폴백 (${qs.length}문제)</h3>
+    <div class="tagline">실제 시험은 AI가 ${RULES.EXAM_TOTAL}문제 새로 출제 · ${RULES.EXAM_MAX_WRONG}개 이하 오답 통과</div>
+    ${qs.length? qs.map(q=>`<div class="exam-q"><span>${esc(q.ko)} <span class="en-ans">→ ${esc(q.answer)}</span></span><span class="from">${esc(q.from)}</span></div>`).join('') : '<div class="hint">폴백 문제 없음</div>'}
+  </div>`;
+
+  $c.innerHTML = h;
+  window.scrollTo(0,0);
+}
+render();
+</script>
+</body>
+</html>
