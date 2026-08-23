@@ -7,7 +7,8 @@
       "**/.*",
       "**/node_modules/**",
       "functions/**",
-      "**/*.md"
+      "**/*.md",
+      "preview.html"
     ],
     "rewrites": []
   },
