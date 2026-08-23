@@ -3243,6 +3243,52 @@ const CURRICULUM = [
           { ko:'너는 무엇을 먹고 싶니?', answer:'What do you want to eat?' },
         ],
       },
+
+      /* ---------------------------------------------------------------- */
+      {
+        id: 'L8-6',
+        title: '간접의문문 (돌려서 정중하게)',
+        tagline: '다듬기 — 물음을 문장 안에 넣어 정중하게 물어요',
+        skeleton: 'Could you tell me / Do you know + 의문사 + 주어 + 동사',
+        focus: '간접의문문 어순 / 정중한 질문',
+        card: {
+          achieve: '이걸 익히면 같은 질문을 <b>툭 던지지 않고 정중하게</b> 물을 수 있어요. 처음 보는 사람, 선생님, 가게 직원에게 쓰는 말투예요.',
+          howto: '진입로 — 앞에 <b>Could you tell me</b>(알려 주실 수 있나요) 또는 <b>Do you know</b>(아세요)를 머리로 붙이고, 원래 질문을 뒤에 이어요. 핵심 — 질문이 <b>문장 안으로 들어가면 물음 뼈대(do·does·did)가 사라지고</b> 다시 평서문 어순이 돼요. 울타리 — <b>where is he ❌ / where he is ⭕</b>, <b>did를 쓰던 건 동사를 과거형으로</b>(where did he go → where he went). 의문사가 없는 Yes/No 질문이면 의문사 자리에 <b>if</b>를 넣어요.',
+          demo: {
+            ko: ['그가', '어디 사는지', '아세요?'],
+            steps: [
+              { q: '정중한 머리?', ko: '아세요',                    en: 'Do you know' },
+              { q: '궁금한 것?',  ko: '어디',                      en: 'where' },
+              { q: '누가 한다?',  ko: '그가 산다 — 평서문 어순으로!', en: 'he lives' },
+            ],
+            answer: 'Do you know where he lives?',
+            tip: '머리를 붙이는 순간 뒤는 물음이 아니라 평서문이 됩니다.',
+          },
+        },
+        practice: [
+          { ko: '화장실이 어디인지 알려 주실 수 있나요?',
+            steps: [{ q:'정중한 머리?', en:'Could you tell me' }, { q:'궁금한 것?', en:'where' }, { q:'누가 한다?', en:'the bathroom is', hint:'is가 뒤로! where is the bathroom ❌' }],
+            answer: 'Could you tell me where the bathroom is?' },
+          { ko: '그녀가 언제 도착했는지 아세요?',
+            steps: [{ q:'정중한 머리?', en:'Do you know' }, { q:'궁금한 것?', en:'when' }, { q:'누가 한다?', en:'she arrived', hint:'did가 사라지고 동사가 과거형! when did she arrive ❌' }],
+            answer: 'Do you know when she arrived?' },
+          { ko: '그가 한국인인지 아세요?',
+            steps: [{ q:'정중한 머리?', en:'Do you know' }, { q:'의문사가 없으면?', en:'if', hint:'Yes/No 질문이면 if를 그 자리에' }, { q:'누가 한다?', en:'he is Korean' }],
+            answer: 'Do you know if he is Korean?' },
+        ],
+        challenges: [
+          { ko:'(처음 보는 가게 직원에게) 이게 얼마인지 알려 주실 수 있나요?', answer:'Could you tell me how much this is?',
+            chunks:[{ lab:'정중한 머리', ko:'알려 주실 수 있나요' }, { lab:'궁금한 것', ko:'얼마' }, { lab:'누가 한다', ko:'이것이 ~이다 (평서문 어순)' }] },
+          { ko:'그가 어디에 갔는지 아세요?', answer:'Do you know where he went?' },
+          { ko:'역이 어디인지 알려 주실 수 있나요?', answer:'Could you tell me where the station is?' },
+          { ko:'그녀가 무엇을 원하는지 아세요?', answer:'Do you know what she wants?' },
+          { ko:'그가 올지 아세요?', answer:'Do you know if he will come?' },
+        ],
+        similar: [
+          { ko:'수업이 언제 시작하는지 알려 주실 수 있나요?', answer:'Could you tell me when the class starts?' },
+          { ko:'그것이 사실인지 아세요?', answer:'Do you know if it is true?' },
+        ],
+      },
     ],
 
     /* ── L8 총정리 (AI가 20문제 새로 출제. 아래는 폴백) ── */
@@ -3260,6 +3306,8 @@ const CURRICULUM = [
         { ko:'벤치에 앉아 있는 그 남자는 우리 아빠다.', answer:'The man sitting on the bench is my dad.', from:'L8-4' },
         { ko:'그는 언제 도착했니?',                answer:'When did he arrive?',                    from:'L8-5' },
         { ko:'나는 그 영화를 한 번도 본 적이 없다.', answer:'I have never seen the movie.',           from:'L8-5' },
+        { ko:'그가 어디 사는지 아세요?',            answer:'Do you know where he lives?',            from:'L8-6' },
+        { ko:'화장실이 어디인지 알려 주실 수 있나요?', answer:'Could you tell me where the bathroom is?', from:'L8-6' },
       ],
     },
   },
