@@ -55,10 +55,11 @@ service cloud.firestore {
     function isOwner(uid) { return isSignedIn() && request.auth.uid == uid; }
 
     function isAdmin()   { return isSignedIn() && email() in adminEmails(); }
-    // 관리·승인 가능 (운영진 + 교사)
+    // 레벨 조정·시험 허가 등 전체 관리 (운영진 + 교사)
     function isTeacher() { return isAdmin() || (isSignedIn() && email() in teacherOnlyEmails()); }
-    // 관리 패널 열람 가능 (운영진 + 교사 + 행정)
-    function canView()   { return isTeacher() || (isSignedIn() && email() in staffEmails()); }
+    function isStaff()   { return isSignedIn() && email() in staffEmails(); }
+    // 관리 패널 열람 (운영진 + 교사 + 행정)
+    function canView()   { return isTeacher() || isStaff(); }
 
     // 내 회원 문서의 승인 상태.
     // status 필드가 없는 예전 계정은 'approved'로 봅니다 (기존 학생 잠김 방지).
@@ -87,8 +88,13 @@ service cloud.firestore {
 
       // 수정:
       //  · 교사·운영진 → 무엇이든 (승인/거절/레벨조정/시험허가)
+      //  · 행정 → 등록 승인·거절만. status/decidedBy/decidedAt 외의 필드를 건드리면 거부
+      //          (레벨 조정·시험 허가는 여전히 불가)
       //  · 본인 → 승인된 상태에서, status를 스스로 바꾸지 않는 한 허용
       allow update: if isTeacher()
+                    || ( isStaff()
+                         && request.resource.data.diff(resource.data).affectedKeys()
+                              .hasOnly(['status','decidedBy','decidedAt']) )
                     || ( isOwner(uid) && isApproved()
                          && request.resource.data.get('status','approved')
                             == resource.data.get('status','approved') );
