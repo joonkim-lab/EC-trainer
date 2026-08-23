@@ -3316,7 +3316,7 @@ const CURRICULUM = [
     theme: { ink:'#8F4000', accent:'#B25000', soft:'#FDF1E5' },
     title: '뉘앙스 조동사', skill: '뉘앙스 쌉가능',
     skillDesc: '같은 사실도 마음을 담아 말할 수 있어요. 여기부터는 틀림이 아니라 어울림이에요.',
-    nextHint: 'LEVEL 11 · 두 문장을 한 문장으로',
+    nextHint: 'LEVEL 10 · 비교로 정도 말하기',
     units: [
       /* ---------------------------------------------------------------- */
       {
@@ -3554,12 +3554,192 @@ const CURRICULUM = [
     level: 10, threshold: 3, stage: '세련', bookLabel: '3차 임계점',
     theme: { ink:'#8F4000', accent:'#B25000', soft:'#FDF1E5' },
     title: '비교로 정도 말하기', skill: '비교 쌉가능',
+    skillDesc: '크다, 작다에서 멈추던 문장이 더 · 만큼 · 가장으로 정확해져요. 정도를 조절하는 단계예요.',
     nextHint: 'LEVEL 11 · 두 문장을 한 문장으로',
     units: [
-      { id: 'L10-1', title: '비교급 · 최상급', focus: '비교급 · 최상급' },
-      { id: 'L10-2', title: 'as ~ as (~만큼 …한)', focus: '원급 비교' },
-      { id: 'L10-3', title: '비교 강조 · 배수 · the 비교급', focus: '비교 다듬기' },
-      { id: 'L10-4', title: '골라 쓰기 — 어느 비교가 어울릴까', focus: '비교 표현 선택' },
+      /* ---------------------------------------------------------------- */
+      {
+        id: 'L10-1',
+        title: '비교급 · 최상급 (더 ~한 · 가장 ~한)',
+        tagline: '비교 — 더 ~하다, 가장 ~하다를 만들어요',
+        skeleton: '형용사/부사-er + than ~  /  the + 형용사/부사-est',
+        focus: '비교급 · 최상급',
+        card: {
+          achieve: '지금까지는 <b>He is tall</b>까지만 말할 수 있었어요. 이제 <b>"~보다 더 크다"</b>, <b>"가장 크다"</b>까지 말할 수 있어요. 문장에 정도가 생깁니다.',
+          howto: '한국어 신호 — <b>"더 ~한 …보다"</b>가 보이면 비교급 + than, <b>"가장 ~한"</b>이 보이면 the + 최상급. 만들기 — <b>짧은 말(1음절)은 -er / -est</b> (tall → taller → tallest), <b>긴 말(2음절 이상)은 more / most</b> (famous → more famous → most famous). 불규칙 세 개만 외우세요 — <b>good–better–best / bad–worse–worst / many·much–more–most</b>. 울타리 — <b>more taller ❌</b>(둘 중 하나만!), 최상급 앞엔 <b>the 필수</b>, 비교 대상은 <b>than 뒤</b>에.',
+          demo: {
+            ko: ['오늘이', '어제보다', '더 덥다'],
+            steps: [
+              { q: '무엇이?',    ko: '오늘이',                      en: 'Today' },
+              { q: '어떤?',      ko: '더 더운 — hot에 -er',         en: 'is hotter' },
+              { q: '무엇보다?',  ko: '어제보다 — than 뒤에',         en: 'than yesterday' },
+            ],
+            answer: 'Today is hotter than yesterday.',
+            tip: '"더 ~한"은 -er, "가장 ~한"은 the -est. 긴 말이면 more / most.',
+          },
+        },
+        practice: [
+          { ko: '이 문제는 저 문제보다 더 쉽다',
+            steps: [{ q:'무엇이?', en:'This question' }, { q:'어떤?', en:'is easier', hint:'easy → easier (y는 i로!)' }, { q:'무엇보다?', en:'than that one', hint:'반복되는 명사는 one으로' }],
+            answer: 'This question is easier than that one.' },
+          { ko: '그 영화는 그 책보다 더 흥미롭다',
+            steps: [{ q:'무엇이?', en:'The movie' }, { q:'어떤?', en:'is more interesting', hint:'긴 형용사 → more + 원형. interestinger ❌' }, { q:'무엇보다?', en:'than the book' }],
+            answer: 'The movie is more interesting than the book.' },
+          { ko: '그는 우리 반에서 가장 빠른 학생이다',
+            steps: [{ q:'누가?', en:'He' }, { q:'가장 ~한?', en:'is the fastest student', hint:'최상급 앞엔 the 필수!' }, { q:'어디에서?', en:'in my class' }],
+            answer: 'He is the fastest student in my class.' },
+        ],
+        challenges: [
+          { ko:'건강이 돈보다 더 중요하다.', answer:'Health is more important than money.',
+            chunks:[{ lab:'무엇이', ko:'건강이' }, { lab:'어떤', ko:'더 중요한 — 긴 말이니 more' }, { lab:'무엇보다', ko:'돈보다 → than money' }] },
+          { ko:'그녀는 나보다 더 일찍 일어난다.', answer:'She gets up earlier than me.' },
+          { ko:'이것은 세상에서 가장 높은 건물이다.', answer:'This is the tallest building in the world.' },
+          { ko:'내 점수는 지난번보다 더 나쁘다.', answer:'My score is worse than last time.' },
+          { ko:'이것이 이 가게에서 가장 싼 가방이다.', answer:'This is the cheapest bag in this store.' },
+        ],
+        similar: [
+          { ko:'서울은 부산보다 더 크다.', answer:'Seoul is bigger than Busan.' },
+          { ko:'오늘은 내 인생에서 가장 행복한 날이다.', answer:'Today is the happiest day of my life.' },
+        ],
+      },
+
+      /* ---------------------------------------------------------------- */
+      {
+        id: 'L10-2',
+        title: 'as ~ as (~만큼 …한)',
+        tagline: '비교 — 만큼이라고 말하면 둘이 같아져요',
+        skeleton: '누가 + 동사 + as 형용사/부사 as + 비교 대상',
+        focus: '원급 비교',
+        card: {
+          achieve: '이걸 익히면 <b>"~만큼 …하다"</b>를 말할 수 있어요. 더도 덜도 아니고 <b>같은 정도</b>라고 말하는 틀이에요.',
+          howto: '한국어 신호 — <b>"~만큼 …한/…하게"</b>. 만들기 — <b>as와 as 사이엔 원급</b>, 사전에 나오는 형태 그대로예요 (as tall as ⭕ / as taller as ❌). 부정 — <b>not as ~ as</b>는 "~만큼 …하지 않다", 즉 <b>비교 대상보다 덜하다</b>는 뜻이에요. 보너스 — <b>as ~ as possible</b> = "가능한 한 ~하게". 울타리 — as ~ as 사이에 <b>비교급 금지</b>, 뒤의 as를 than으로 바꾸지 마세요.',
+          demo: {
+            ko: ['내 동생은', '나만큼', '키가 크다'],
+            steps: [
+              { q: '누가?',      ko: '내 동생은',                       en: 'My brother' },
+              { q: '만큼 ~한?',  ko: '큰 — 원형 그대로 as 사이에',       en: 'is as tall as' },
+              { q: '누구만큼?',  ko: '나만큼',                          en: 'me' },
+            ],
+            answer: 'My brother is as tall as me.',
+            tip: 'as ~ as 사이는 언제나 원급. taller ❌ tall ⭕',
+          },
+        },
+        practice: [
+          { ko: '이 가방은 저 가방만큼 무겁다',
+            steps: [{ q:'무엇이?', en:'This bag' }, { q:'만큼 ~한?', en:'is as heavy as', hint:'원급 그대로! heavier ❌' }, { q:'무엇만큼?', en:'that one', hint:'반복되는 명사는 one' }],
+            answer: 'This bag is as heavy as that one.' },
+          { ko: '그녀는 가수만큼 노래를 잘한다',
+            steps: [{ q:'누가?', en:'She' }, { q:'한다?', en:'sings' }, { q:'만큼 ~하게?', en:'as well as a singer', hint:'부사도 원급 그대로 — well' }],
+            answer: 'She sings as well as a singer.' },
+          { ko: '오늘은 어제만큼 춥지 않다',
+            steps: [{ q:'무엇이?', en:'Today' }, { q:'만큼 ~하지 않다?', en:'is not as cold as', hint:'not as ~ as = 어제보다 덜 춥다는 뜻' }, { q:'무엇만큼?', en:'yesterday' }],
+            answer: 'Today is not as cold as yesterday.' },
+        ],
+        challenges: [
+          { ko:'축구는 야구만큼 인기 있다.', answer:'Soccer is as popular as baseball.',
+            chunks:[{ lab:'무엇이', ko:'축구는' }, { lab:'만큼 ~한', ko:'as popular as — 원급!' }, { lab:'무엇만큼', ko:'야구만큼' }] },
+          { ko:'나는 우리 형만큼 일찍 일어났다.', answer:'I got up as early as my brother.' },
+          { ko:'이 문제는 보기만큼 쉽지 않다.', answer:'This question is not as easy as it looks.' },
+          { ko:'그는 너만큼 바쁘다.', answer:'He is as busy as you.' },
+          { ko:'가능한 한 빨리 나에게 전화해 줘.', answer:'Call me as soon as possible.' },
+        ],
+        similar: [
+          { ko:'이 의자는 침대만큼 편하다.', answer:'This chair is as comfortable as a bed.' },
+          { ko:'영어는 수학만큼 중요하다.', answer:'English is as important as math.' },
+        ],
+      },
+
+      /* ---------------------------------------------------------------- */
+      {
+        id: 'L10-3',
+        title: '비교 강조 · 배수 · the 비교급',
+        tagline: '비교 — 훨씬, 몇 배, ~할수록까지 말해요',
+        skeleton: 'much + 비교급  /  배수 + as ~ as  /  The 비교급 ~, the 비교급 …',
+        focus: '비교 다듬기',
+        card: {
+          achieve: '이걸 익히면 비교 문장이 세 방향으로 자라요 — <b>① 훨씬(much)</b> <b>② 두 배(twice as ~ as)</b> <b>③ 점점 · ~할수록(비교급 and 비교급 / The 비교급)</b>.',
+          howto: '① 강조 — 비교급 앞에 <b>much / even / far</b>를 붙이면 "훨씬 더 ~한". <b>very는 못 써요</b> (very taller ❌ / much taller ⭕). ② 배수 — <b>twice / three times + as ~ as</b> = "두 배 / 세 배 ~한". ③ 점점 — <b>비교급 and 비교급</b> = "점점 더 ~한", <b>The 비교급 + 주어 + 동사, the 비교급 + 주어 + 동사</b> = "~할수록 더 …하다". 울타리 — 비교급 강조는 very ❌, 배수는 as ~ as <b>앞</b>에 붙여요.',
+          demo: {
+            ko: ['오늘은', '어제보다', '훨씬 더 춥다'],
+            steps: [
+              { q: '무엇이?',   ko: '오늘은',                          en: 'Today' },
+              { q: '훨씬?',     ko: 'very ❌ — much로 강조',           en: 'is much' },
+              { q: '더 추운?',  ko: '비교급 + than',                   en: 'colder than yesterday' },
+            ],
+            answer: 'Today is much colder than yesterday.',
+            tip: '비교급을 강조할 땐 very가 아니라 much / even / far.',
+          },
+        },
+        practice: [
+          { ko: '이 가방이 저것보다 훨씬 더 싸다',
+            steps: [{ q:'무엇이?', en:'This bag' }, { q:'훨씬 더 ~한?', en:'is much cheaper', hint:'강조는 much! very ❌' }, { q:'무엇보다?', en:'than that one' }],
+            answer: 'This bag is much cheaper than that one.' },
+          { ko: '그의 방은 내 방보다 두 배 크다',
+            steps: [{ q:'무엇이?', en:'His room' }, { q:'두 배 ~한?', en:'is twice as big as', hint:'배수는 as ~ as 앞에 — twice as big as' }, { q:'무엇만큼?', en:'mine', hint:'my room = mine (내 것)' }],
+            answer: 'His room is twice as big as mine.' },
+          { ko: '날씨가 점점 더 더워지고 있다',
+            steps: [{ q:'무엇이?', en:'It' }, { q:'~해지고 있다?', en:'is getting', hint:'"~한 상태가 되다"는 get + 형용사' }, { q:'점점 더 더운?', en:'hotter and hotter', hint:'점점 = 비교급 and 비교급' }],
+            answer: 'It is getting hotter and hotter.' },
+        ],
+        challenges: [
+          { ko:'네가 더 많이 연습할수록, 그것은 더 쉬워진다.', answer:'The more you practice, the easier it gets.',
+            chunks:[{ lab:'틀', ko:'The 비교급 ~, the 비교급 …' }, { lab:'앞', ko:'더 많이 연습할수록 → The more you practice' }, { lab:'뒤', ko:'더 쉬워진다 → the easier it gets' }] },
+          { ko:'이 영화가 그 책보다 훨씬 더 재미있다.', answer:'This movie is much more interesting than the book.' },
+          { ko:'그 다리는 이 다리보다 세 배 길다.', answer:'That bridge is three times as long as this one.' },
+          { ko:'점점 더 많은 사람들이 온라인으로 쇼핑한다.', answer:'More and more people shop online.' },
+          { ko:'빠르면 빠를수록 좋다.', answer:'The sooner, the better.' },
+        ],
+        similar: [
+          { ko:'그녀는 나보다 훨씬 더 바쁘다.', answer:'She is much busier than me.' },
+          { ko:'더 높이 올라갈수록, 더 추워진다.', answer:'The higher you go, the colder it gets.' },
+        ],
+      },
+
+      /* ---------------------------------------------------------------- */
+      {
+        id: 'L10-4',
+        title: '골라 쓰기 — 어느 비교가 어울릴까',
+        tagline: '골라 쓰기 — 둘 다 맞아요. 어울리는 걸 고르세요',
+        skeleton: '상황(괄호) → 어울리는 비교 표현',
+        focus: '비교 표현 선택',
+        card: {
+          achieve: '이걸 익히면 <b>문법이 아니라 상황</b>을 보고 비교 표현을 고를 수 있어요. 같은 사실도 어느 틀에 담느냐로 그림이 달라져요.',
+          howto: '여기서도 <b>틀린 문장을 고치는 게 아니에요.</b> 괄호 안 상황이 답을 정합니다. 네 갈래만 구분하세요. <b>차이를 말하고 싶으면</b> → 비교급 + than · <b>차이가 크다고 강조하면</b> → much + 비교급 · <b>같다고 말하고 싶으면</b> → as ~ as · <b>최고라고 말하면</b> → the 최상급. 울타리 — <b>남을 깎아 말해야 할 땐 worse than을 피하세요.</b> 대신 <b>not as ~ as</b>(~만큼 …하지 않다)를 쓰면 부드러워져요.',
+          demo: {
+            ko: ['같은 사실도', '고르는 틀에 따라', '그림이 달라져요'],
+            steps: [
+              { q: '차이를 강조하며', ko: '오늘이 어제보다 훨씬 낫다',      en: 'Today is much better than yesterday.' },
+              { q: '같다고 말하며',   ko: '오늘도 어제만큼 좋다',           en: 'Today is as good as yesterday.' },
+              { q: '부드럽게 낮춰',   ko: '어제는 오늘만큼 좋지 않았다',     en: 'Yesterday was not as good as today.' },
+            ],
+            answer: '사실은 같아요. 고르는 건 보여 주고 싶은 그림입니다.',
+            tip: '괄호 안 상황을 먼저 읽으세요. 거기에 답이 있습니다.',
+          },
+        },
+        practice: [
+          { ko: '(차이가 아주 크다고 강조하며) 이번 시험이 지난 시험보다 훨씬 더 어려웠어',
+            steps: [{ q:'상황은?', en:'much harder', hint:'차이가 큼 → much + 비교급' }, { q:'무엇이?', en:'This exam was' }, { q:'무엇보다?', en:'than the last one' }],
+            answer: 'This exam was much harder than the last one.' },
+          { ko: '(둘이 똑같이 잘한다고 칭찬하며) 너는 네 형만큼 노래를 잘해',
+            steps: [{ q:'상황은?', en:'as well as', hint:'차이 없음 → as ~ as' }, { q:'누가?', en:'You sing' }, { q:'누구만큼?', en:'your brother' }],
+            answer: 'You sing as well as your brother.' },
+          { ko: '(친구를 기죽이지 않게, 내 쪽을 낮추며) 내 점수는 네 점수만큼 좋지 않아',
+            steps: [{ q:'상황은?', en:'not as good as', hint:'부드럽게 → not as ~ as. worse than은 세게 들려요' }, { q:'무엇이?', en:'My score is' }, { q:'무엇만큼?', en:'yours', hint:'your score = yours (네 것)' }],
+            answer: 'My score is not as good as yours.' },
+        ],
+        challenges: [
+          { ko:'(내 경험 중 최고라고 강조하며) 이것은 내가 지금까지 본 것 중 최고의 영화야.', answer:'This is the best movie I have ever seen.',
+            chunks:[{ lab:'상황', ko:'경험 중 최고 → the 최상급' }, { lab:'무엇', ko:'the best movie' }, { lab:'꾸미기', ko:'내가 지금까지 본 → I have ever seen' }] },
+          { ko:'(새 폰을 자랑하며) 이 폰은 내 예전 폰보다 훨씬 가벼워.', answer:'This phone is much lighter than my old one.' },
+          { ko:'(친구와 마음이 같다고 말하며) 나도 너만큼 긴장돼.', answer:'I am as nervous as you.' },
+          { ko:'(남의 발표를 깎지 않고 내 것을 낮추며) 내 발표는 네 발표만큼 매끄럽지 않았어.', answer:'My presentation was not as smooth as yours.' },
+          { ko:'(점점 심해진다고 걱정하며) 교통이 점점 더 나빠지고 있어.', answer:'The traffic is getting worse and worse.' },
+        ],
+        similar: [
+          { ko:'(최고라고 칭찬하며) 이곳은 우리 동네에서 최고의 식당이야.', answer:'This is the best restaurant in my neighborhood.' },
+          { ko:'(부드럽게) 오늘은 어제만큼 바쁘지 않아.', answer:'Today is not as busy as yesterday.' },
+        ],
+      },
     ],
     exam: { passScore: RULES.EXAM_PASS, total: RULES.EXAM_TOTAL, questions: [] },  // AI가 매번 새로 출제
   },
