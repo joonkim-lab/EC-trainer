@@ -641,10 +641,11 @@ const PLACEMENT_BANK = {
 };
 
 const PLACEMENT_MAX = Math.max(...Object.keys(PLACEMENT_BANK).map(Number));
+// 1·5·9단계는 각각 1·2·3차 임계점의 첫 레벨 → 임계점 색을 그대로 씀
 const PLACEMENT_STARTS = [
-  { level:1, icon:'🌱', label:'처음이야 / 자신 없어', desc:'맨 처음부터 차근차근' },
-  { level:5, icon:'🌿', label:'기본 문장은 만들 줄 알아', desc:'중간부터 시작' },
-  { level:9, icon:'🌳', label:'꽤 자신 있어', desc:'높은 단계부터 시작' },
+  { level:1, icon:'🌱', label:'처음이야 / 자신 없어',      desc:'맨 처음부터 차근차근', stage:'1차 · 기초' },
+  { level:5, icon:'🌿', label:'기본 문장은 만들 줄 알아', desc:'중간부터 시작',      stage:'2차 · 정교' },
+  { level:9, icon:'🌳', label:'꽤 자신 있어',             desc:'높은 단계부터 시작',  stage:'3차 · 세련' },
 ];
 
 let plState=null;
@@ -656,10 +657,17 @@ function startPlacement(){
   $('pl-bar').style.width = '0%';
   $('pl-area').innerHTML = `
     <div class="small muted" style="margin-bottom:6px">먼저 하나만 물어볼게 — 영어 문장 만들기, 어느 정도까지 해 봤어?</div>
-    ${PLACEMENT_STARTS.map((s,i)=>`
-      <button class="btn ghost" data-pl-start="${i}" style="display:block;width:100%;text-align:left;margin-top:8px">
-        ${s.icon} <b>${s.label}</b> <span class="small muted">— ${s.desc}</span>
-      </button>`).join('')}
+    ${PLACEMENT_STARTS.map((s,i)=>{
+      const lv = CURRICULUM.find(l=>l.level===s.level);
+      const t = THEMES[(lv&&lv.threshold)||1] || THEMES[1];
+      return `
+      <button class="btn ghost" data-pl-start="${i}"
+        style="display:block;width:100%;text-align:left;margin-top:10px;
+               background:${t.soft};border:1.5px solid ${t.accent};border-left-width:6px;color:${t.deep}">
+        <div style="font-size:15px">${s.icon} <b>${s.label}</b></div>
+        <div class="small" style="opacity:.75;margin-top:2px">${s.stage} · ${s.desc}</div>
+      </button>`;
+    }).join('')}
     <p class="small muted" style="margin-top:10px">어느 걸 골라도 괜찮아. 시험이 알아서 위아래로 맞춰 줄 거야.</p>`;
   document.querySelectorAll('[data-pl-start]').forEach(b=>{
     b.onclick = ()=> beginPlacement(PLACEMENT_STARTS[+b.dataset.plStart].level);
@@ -675,6 +683,7 @@ function plItem(){ return PLACEMENT_BANK[plState.level][plState.j]; }
 function renderPlacement(){
   const it = plItem();
   const per = PLACEMENT_BANK[plState.level].length;
+  applyTheme(plState.level);   // 단계가 오르면 화면 색도 블루 → 인디고 → 오렌지로
   $('pl-bar').style.width = ((plState.level-1)/PLACEMENT_MAX*100)+'%';
   $('pl-area').innerHTML = `
     <div class="small muted" style="margin-bottom:4px">난이도 ${plState.level}단계 (${plState.j+1}/${per})${plState.desc?' · 딱 맞는 자리를 찾는 중':' · 점점 어려워져요'}</div>
@@ -729,6 +738,7 @@ function recordPlacement(score){
 function finishPlacement(){
   const level = Math.max(1, Math.min(plState.top || 1, PLACEMENT_MAX));
   const cur = CURRICULUM.find(l=>l.level===level) || CURRICULUM[0];
+  applyTheme(level);   // 결정된 레벨의 임계점 색으로 마무리
   const blurb = level<=4 ? '기초 체력부터 탄탄하게 — 뼈대와 기본 문형으로 시작해요.'
               : level<=8 ? '기본기가 보여요 — 의미를 가르는 정교함을 다듬어요.'
               : '표현력 단계 — 뉘앙스와 문장 재구성으로 끌어올려요.';
