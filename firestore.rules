@@ -9,10 +9,14 @@ rules_version = '2';
 //          → 승인된 사람만 실제 데이터 사용. 학생 추가에 배포가 필요 없음.
 //
 //  ▣ 역할 4단
-//    운영진(admin)  : 전체 권한 + 승인/거절 + 역할 지정
+//    운영진(admin)  : 전체 권한 + 승인/거절 + 역할 지정 + 일시정지/해제
 //    교사(teacher)  : 학생 관리(레벨·시험 허가) + 승인/거절
 //    행정(staff)    : 열람 + 등록 승인/거절만 (레벨·시험 허가 불가)
 //    학생(student)  : 자기 진도만. 단 '승인' 이후에만
+//
+//  ▣ 승인 상태 : pending · approved · rejected · suspended(일시정지)
+//    suspended는 접속만 막고 진도(level·passedUnits)는 그대로 둡니다.
+//    운영진만 걸고 풀 수 있습니다.
 //
 //  ▣ 역할이 정해지는 두 갈래  (index.html과 반드시 같은 규칙)
 //    ① 아래 이메일 목록 — 운영진 등 잠기면 안 되는 계정의 안전장치 (배포 필요)
@@ -87,6 +91,12 @@ service cloud.firestore {
     function touchesRole() {
       return request.resource.data.get('role','student') != resource.data.get('role','student');
     }
+    // 이번 수정이 '일시정지'를 걸거나 푸는 일인가.
+    // 정지는 운영진 전용이므로 교사·행정·본인 모두 이 문을 통과할 수 없습니다.
+    function touchesSuspend() {
+      return request.resource.data.get('status','approved') == 'suspended'
+          || resource.data.get('status','approved') == 'suspended';
+    }
     // 승인된 사용자 = 교사·운영진(자동) 또는 status == 'approved'
     function isApproved() {
       return isTeacher() || (isSignedIn() && meExists() && myStatus() == 'approved');
@@ -110,14 +120,15 @@ service cloud.firestore {
                               && request.resource.data.get('role','student') == 'student' ) );
 
       // 수정:
-      //  · 운영진 → 무엇이든 (승인/거절/레벨조정/시험허가/★역할 지정)
-      //  · 교사 → 역할(role)을 뺀 나머지 전부
+      //  · 운영진 → 무엇이든 (승인/거절/레벨조정/시험허가/역할 지정/★일시정지)
+      //  · 교사 → 역할(role)과 일시정지를 뺀 나머지 전부
       //  · 행정 → 등록 승인·거절만. status/decidedBy/decidedAt 외의 필드를 건드리면 거부
       //  · 본인 → 승인된 상태에서, status·role을 스스로 바꾸지 않는 한 허용
-      //  ★ role은 운영진 외에는 아무도 못 씁니다. 승격의 유일한 통로입니다.
+      //  ★ role과 suspended는 운영진 외에는 아무도 못 씁니다.
+      //    정지된 학생은 isApproved()가 거짓이라 자기 문서조차 쓸 수 없습니다.
       allow update: if isAdmin()
-                    || ( isTeacher() && !touchesRole() )
-                    || ( isStaff()
+                    || ( isTeacher() && !touchesRole() && !touchesSuspend() )
+                    || ( isStaff() && !touchesSuspend()
                          && request.resource.data.diff(resource.data).affectedKeys()
                               .hasOnly(['status','decidedBy','decidedAt']) )
                     || ( isOwner(uid) && isApproved() && !touchesRole()

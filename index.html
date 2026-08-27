@@ -259,6 +259,21 @@
     </div>
   </section>
 
+  <!-- SUSPENDED (일시정지) -->
+  <section id="screen-suspended" class="hidden">
+    <div class="card" style="max-width:560px;margin:40px auto;text-align:center">
+      <div style="font-size:40px">⏸</div>
+      <h2 style="margin-top:10px">멈추어졌습니다</h2>
+      <p class="small muted" style="margin-top:8px" id="susp-who"></p>
+      <p style="margin-top:14px">선생님과 이야기한 뒤에 다시 열립니다.<br>행정실 선생님을 찾아가세요.</p>
+      <p id="susp-note" class="hidden" style="margin-top:14px;padding:12px 14px;border-radius:12px;background:var(--t-soft);text-align:left"></p>
+      <div class="row" style="justify-content:center;margin-top:18px">
+        <button class="btn" id="susp-refresh">새로고침</button>
+        <button class="btn ghost" id="susp-signout">로그아웃</button>
+      </div>
+    </div>
+  </section>
+
   <!-- PLACEMENT -->
   <section id="screen-placement" class="hidden">
     <div class="card" style="max-width:680px;margin:0 auto">
@@ -356,7 +371,7 @@
  *  앱 로직
  * ==================================================================== */
 const $ = id => document.getElementById(id);
-const show = id => { ['screen-gate','screen-pending','screen-placement','screen-main','screen-admin','screen-guide'].forEach(s=>$(s).classList.add('hidden')); $(id).classList.remove('hidden'); };
+const show = id => { ['screen-gate','screen-pending','screen-suspended','screen-placement','screen-main','screen-admin','screen-guide'].forEach(s=>$(s).classList.add('hidden')); $(id).classList.remove('hidden'); };
 /* ── 역할 4단 : 운영진 · 교사 · 행정(열람만) · 학생 ──────────────────
  *  역할이 정해지는 길은 두 갈래입니다.
  *   ① 아래 이메일 목록  — 코드 수정 + 배포 필요. 운영진처럼 절대 잠기면
@@ -394,8 +409,9 @@ function roleOfMember(m){
   const stored  = (m && ROLE_RANK[m.role]!==undefined) ? m.role : 'student';
   return (ROLE_RANK[stored] > ROLE_RANK[byEmail]) ? stored : byEmail;
 }
-/* ── 승인 상태 ── pending(신청) · approved(승인) · rejected(거절)
-   ※ status가 없는 기존 계정은 '승인됨'으로 봅니다 (기존 학생 잠김 방지) */
+/* ── 승인 상태 ── pending(신청) · approved(승인) · rejected(거절) · suspended(일시정지)
+   ※ status가 없는 기존 계정은 '승인됨'으로 봅니다 (기존 학생 잠김 방지)
+   ※ suspended는 운영진만 걸고 풀 수 있습니다. 진도는 그대로 보존됩니다. */
 const statusOf = (m) => (m && m.status) ? m.status : 'approved';
 const myRole     = () => USER ? roleOfMember(MEMBER || { email:USER.email }) : 'student';
 const isAdmin    = () => myRole()==='admin';                       // 역할 지정·삭제
@@ -444,6 +460,8 @@ $('signin').onclick = async ()=>{
 $('signout').onclick = async ()=>{ if(auth) await auth.signOut(); location.reload(); };
 $('pending-refresh').onclick = ()=> location.reload();
 $('pending-signout').onclick = async ()=>{ if(auth) await auth.signOut(); location.reload(); };
+$('susp-refresh').onclick = ()=> location.reload();
+$('susp-signout').onclick = async ()=>{ if(auth) await auth.signOut(); location.reload(); };
 $('admin-btn').onclick = ()=> openAdmin();
 $('admin-back').onclick = ()=> enterMain();
 $('guide-btn').onclick = ()=> openGuide(false);
@@ -474,6 +492,15 @@ if(firebaseReady){
       show('screen-gate');
       $('gate-note').textContent = '이 계정은 등록이 승인되지 않았어요. 준킴쌤에게 문의해 주세요.';
       await auth.signOut();
+      return;
+    }
+    if(st === 'suspended'){
+      $('topbar').style.visibility='hidden';
+      $('susp-who').textContent = `${MEMBER.name||USER.displayName||''} · ${MEMBER.email||''}`;
+      const note = (MEMBER.suspendNote||'').trim();
+      $('susp-note').classList.toggle('hidden', !note);
+      if(note) $('susp-note').textContent = `선생님 메모 — ${note}`;
+      show('screen-suspended');
       return;
     }
     if(st !== 'approved'){
@@ -1533,6 +1560,7 @@ async function loadAdmin(){
     const all = mSnap.docs.map(d=>({ id:d.id, ...d.data() }));
     // 승인 대기는 따로 위에 모아 보여준다
     const pending = all.filter(m=> statusOf(m)==='pending');
+    const suspended = all.filter(m=> statusOf(m)==='suspended');
     let members = all.filter(m=> statusOf(m)==='approved');
     // 선생님 본인은 맨 아래로, 나머지는 레벨 높은 순
     members.sort((a,b)=>{
@@ -1561,8 +1589,22 @@ async function loadAdmin(){
             </div>` : `<span class="muted small">승인 권한 없음</span>`}
           </div>`).join('')}
       </div>`;
-    if(members.length===0 && pending.length===0){ $('admin-list').innerHTML='<div class="muted small">아직 등록된 학습자가 없어요.</div>'; return; }
-    $('admin-list').innerHTML = pendingHtml + members.map((m,i)=>{
+    const suspendedHtml = suspended.length===0 ? '' : `
+      <div class="card" style="margin-bottom:14px;opacity:.85">
+        <div class="kicker">⏸ 멈춰 둔 학습자 ${suspended.length}명</div>
+        ${suspended.map(m=>`
+          <div class="member" style="align-items:center">
+            <div class="avatar" style="background:var(--muted)">${(m.name||m.email||'?').trim().charAt(0).toUpperCase()}</div>
+            <div class="minfo" style="flex:1">
+              <div class="mname">${m.name||'이름 없음'} <span class="muted small">${m.email||''}</span></div>
+              <div class="muted small">${m.suspendNote? `메모 — ${m.suspendNote}` : '메모 없음'}${m.level? ` · LEVEL ${m.level} 진도 보존됨`:''}</div>
+            </div>
+            ${maySetRole ? `<button class="btn" style="padding:4px 12px" data-resume="${m.id}" data-name="${(m.name||'').replace(/"/g,'')}">▶ 다시 열기</button>`
+                         : `<span class="muted small">운영진만 해제</span>`}
+          </div>`).join('')}
+      </div>`;
+    if(members.length===0 && pending.length===0 && suspended.length===0){ $('admin-list').innerHTML='<div class="muted small">아직 등록된 학습자가 없어요.</div>'; return; }
+    $('admin-list').innerHTML = pendingHtml + suspendedHtml + members.map((m,i)=>{
       const lvl = m.level || null;
       const units = lvl? flattenUnits(lvl) : [];
       const passedInLevel = lvl? units.filter(u=>(m.passedUnits||{})[u.id]).length : 0;
@@ -1584,6 +1626,8 @@ async function loadAdmin(){
       ) : '';
       const resetBtn = (canEdit && lvl)
         ? `<button class="btn ghost" style="padding:4px 10px" data-reset="${m.id}" data-name="${(m.name||'').replace(/"/g,'')}" title="레벨을 비워서 다음 로그인 때 배치고사를 다시 보게 해요">🔄 배치고사</button>` : '';
+      const suspendBtn = (maySetRole && mRole==='student')
+        ? `<button class="btn ghost" style="padding:4px 10px" data-suspend="${m.id}" data-name="${(m.name||'').replace(/"/g,'')}" title="접속을 잠시 막아요. 진도는 그대로 남습니다">⏸</button>` : '';
       const lvlBtns = canEdit
         ? `<button class="btn ghost" style="padding:4px 10px" data-act="down" data-uid="${m.id}" data-name="${(m.name||'').replace(/"/g,'')}" data-lvl="${lvl||1}">▽</button>
            <b style="min-width:54px;text-align:center">L${lvl||'-'}</b>
@@ -1599,6 +1643,7 @@ async function loadAdmin(){
             : '아직 배치고사 전') + ` · 연속 ${st.streak||0}일 · ${st.todayDone?'오늘 ✅':'오늘 ⬜'}`}</div>
         </div>
         <div class="row" style="gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end">
+          ${suspendBtn}
           ${resetBtn}
           ${permitBtn}
           ${lvlBtns}
@@ -1619,6 +1664,12 @@ async function loadAdmin(){
         const sel = document.querySelector(`#admin-list [data-rolefor="${b.dataset.uid}"]`);
         decideMember(b.dataset.uid, b.dataset.name, b.dataset.approve==='yes', sel? sel.value : null);
       };
+    });
+    document.querySelectorAll('#admin-list [data-suspend]').forEach(b=>{
+      b.onclick = ()=> suspendMember(b.dataset.suspend, b.dataset.name);
+    });
+    document.querySelectorAll('#admin-list [data-resume]').forEach(b=>{
+      b.onclick = ()=> resumeMember(b.dataset.resume, b.dataset.name);
     });
     document.querySelectorAll('#admin-list [data-reset]').forEach(b=>{
       b.onclick = ()=> resetPlacement(b.dataset.reset, b.dataset.name);
@@ -1651,6 +1702,36 @@ async function decideMember(uid, name, approve, role){
   }catch(e){
     console.error(e); toast('처리하지 못했어요. 보안 규칙을 확인해 주세요.');
   }
+}
+/* 일시정지 / 해제 — 운영진만. 진도(passedUnits·level)는 건드리지 않는다. */
+async function suspendMember(uid, name){
+  if(!isAdmin()){ toast('운영진만 멈출 수 있어요.'); return; }
+  const note = prompt(`${name||'이 학습자'}의 접속을 잠시 막습니다.\n학생에게 보여 줄 메모 (선택 · 비워도 됩니다)`, '');
+  if(note === null) return;                    // 취소
+  try{
+    await db.collection('members').doc(uid).set({
+      status:'suspended',
+      suspendNote:(note||'').trim().slice(0,200),
+      suspendedBy:(USER.email||'').toLowerCase(),
+      suspendedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge:true });
+    toast(`${name||'학습자'}를 멈췄어요. 진도는 그대로 남아 있어요.`);
+    loadAdmin();
+  }catch(e){ console.error(e); toast('처리하지 못했어요. 보안 규칙을 확인해 주세요.'); }
+}
+async function resumeMember(uid, name){
+  if(!isAdmin()){ toast('운영진만 해제할 수 있어요.'); return; }
+  if(!confirm(`${name||'이 학습자'}를 다시 열어 줄까요?\n원래 레벨·진도에서 그대로 이어집니다.`)) return;
+  try{
+    await db.collection('members').doc(uid).set({
+      status:'approved',
+      suspendNote:'',
+      resumedBy:(USER.email||'').toLowerCase(),
+      resumedAt: firebase.firestore.FieldValue.serverTimestamp()
+    }, { merge:true });
+    toast(`${name||'학습자'}가 다시 학습할 수 있어요.`);
+    loadAdmin();
+  }catch(e){ console.error(e); toast('처리하지 못했어요. 보안 규칙을 확인해 주세요.'); }
 }
 /* 배치고사 재응시 — 레벨을 비우면 다음 로그인 때 배치고사가 다시 뜬다.
    진도(passedUnits)는 지우지 않으므로, 같은 레벨로 다시 배치되면 통과 기록이 그대로 남는다. */
