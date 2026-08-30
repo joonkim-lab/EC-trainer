@@ -28,6 +28,7 @@
 | `preview.html` | 182 | 로컬 커리큘럼 미리보기 (신규, 아래 9번) |
 
 - 로컬: **`~/EC-trainer`** (★ Downloads 아님)
+- **작업 기기 2대**: 맥북 프로 + 맥미니. **양쪽 다 경로는 `~/EC-trainer`**, 동기화는 git (아래 3번)
 - 레포: `joonkim-lab/EC-trainer` · 라이브: `joonkim-lab.github.io/EC-trainer`
 - 현재 브랜치: **`main`** (curriculum-v2는 역할 끝남 — main과 내용 동일)
 - Firebase 프로젝트: `ec-trainer`
@@ -51,6 +52,31 @@ push하면 1~3분 뒤 GitHub Pages가 자동 재배포. 확인은 **강력 새�
 - **`firestore.rules`만 예외** — git과 별개로 `firebase deploy --only firestore:rules`
   - 인증 만료 잦음 → `firebase login --reauth` 먼저
   - ⚠️ **`concat()` 쓰지 말 것**: 컴파일은 되지만 실행 시 `Missing or insufficient permissions` (실제 사고). 이메일은 각 함수에 **직접 나열**
+
+### ★ 두 기기(맥북 프로 · 맥미니) 운용 규칙
+
+준킴쌤은 **맥북 프로와 맥미니 두 대**에서 작업합니다. 대화창 하나는 컴퓨터 한 대에만 연결되므로, **그 세션이 어느 기기에 붙었는지 먼저 확인**하세요 (`get_device_info`의 `deviceName`). 두 기기를 한 세션에서 동시에 만질 수는 없습니다.
+
+**매 세션 시작할 때 (기기 불문):**
+```bash
+cd ~/EC-trainer && git pull origin main
+```
+**매 세션 끝낼 때:**
+```bash
+git add -A && git commit -m "메시지" && git push origin main
+```
+
+- **작업 전 `pull`, 작업 후 `push`** — 이 두 줄이 두 기기를 같은 상태로 유지하는 전부입니다.
+- ⚠️ **양쪽에서 동시에 편집하지 마세요.** 한 번에 한 기기에서만. 3권 시절 웹업로드/로컬을 섞어 족보가 갈라진 사고가, 두 기기 사이에서 똑같이 재현됩니다.
+- `pull`이 충돌나면 = 반대쪽 기기에 push 안 한 작업이 남아 있다는 뜻. **그 기기로 가서 먼저 push**하고 오세요.
+- ⚠️ 저장소를 iCloud/Dropbox 폴더에 두지 마세요 (`.git` 손상 위험). 동기화는 git만 씁니다.
+
+**맥미니에 처음 세팅할 때:**
+```bash
+cd ~ && git clone https://github.com/joonkim-lab/EC-trainer.git
+cd EC-trainer
+git config user.name "joon.kim" && git config user.email "joon.kim@educclesia.com"
+```
 
 ### 왜 바뀌었나 (2026.08.23에 터진 일)
 
@@ -165,7 +191,7 @@ PLACEMENT_PASS: 70
 
 **화면 색으로 배포 확인하는 법**: L1 화면이 **파란색**이면 새 버전, **보라색**이면 캐시된 옛 버전입니다.
 
-크레딧: **made by coldwater1042** (로그인 화면 + 가이드 2곳)
+크레딧: **made by Educclesia Group** (로그인 화면 + 가이드 2곳)
 
 ---
 
