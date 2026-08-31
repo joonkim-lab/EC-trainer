@@ -240,7 +240,7 @@
       </div>
       <button class="btn" id="signin"><span class="gicon">G</span> 구글 계정으로 시작하기</button>
       <p class="small muted" id="gate-note" style="margin-top:18px"></p>
-      <p class="small muted" style="margin-top:24px;opacity:.6">made by Educclesia Group</p>
+      <p class="small muted" style="margin-top:24px;opacity:.6">made by coldwater1042</p>
     </div>
   </section>
 
@@ -1473,7 +1473,7 @@ const GUIDE_SECTIONS = [
      <li>직접 여러 유닛을 돌려 보시고, <b>어색한 예문·설명·채점</b>이 있으면 준킴쌤께 알려 주세요. 그 피드백으로 다듬어 나가요.</li>
    </ul>
    <p style="margin-top:12px"><b>봐 주시면 좋은 것</b> — 익힘카드 톤이 아이 눈높이에 맞는지, 실전 채점 힌트가 도움이 되는지, 유닛당 연습3·실전5 분량이 적절한지요.</p>
-   <p style="margin-top:12px" class="muted small">한국어를 끊어 영어 문장을 만드는 훈련 · made by <b>Educclesia Group</b></p>`
+   <p style="margin-top:12px" class="muted small">한국어를 끊어 영어 문장을 만드는 훈련 · made by <b>coldwater1042</b></p>`
 ];
 
 /* 학생용 — 위 5탭은 선생님 운영 매뉴얼이라 학생에겐 이 한 장만 보여줍니다. */
@@ -1592,6 +1592,7 @@ async function loadAdmin(){
     const suspendedHtml = suspended.length===0 ? '' : `
       <div class="card" style="margin-bottom:14px;opacity:.85">
         <div class="kicker">⏸ 멈춰 둔 학습자 ${suspended.length}명</div>
+        ${maySetRole? '<div class="muted small" style="margin:-4px 0 10px">전학·퇴원으로 기록을 지우려면 🗑 을 누르세요. 되돌릴 수 없습니다.</div>':''}
         ${suspended.map(m=>`
           <div class="member" style="align-items:center">
             <div class="avatar" style="background:var(--muted)">${(m.name||m.email||'?').trim().charAt(0).toUpperCase()}</div>
@@ -1599,7 +1600,10 @@ async function loadAdmin(){
               <div class="mname">${m.name||'이름 없음'} <span class="muted small">${m.email||''}</span></div>
               <div class="muted small">${m.suspendNote? `메모 — ${m.suspendNote}` : '메모 없음'}${m.level? ` · LEVEL ${m.level} 진도 보존됨`:''}</div>
             </div>
-            ${maySetRole ? `<button class="btn" style="padding:4px 12px" data-resume="${m.id}" data-name="${(m.name||'').replace(/"/g,'')}">▶ 다시 열기</button>`
+            ${maySetRole ? `<div class="row" style="gap:6px">
+              <button class="btn" style="padding:4px 12px" data-resume="${m.id}" data-name="${(m.name||'').replace(/"/g,'')}">▶ 다시 열기</button>
+              <button class="btn ghost" style="padding:4px 10px;color:#b00020;border-color:#f0c0c8" data-del="${m.id}" data-name="${(m.name||'').replace(/"/g,'')}" data-email="${m.email||''}" title="기록을 완전히 지웁니다. 되돌릴 수 없어요">🗑</button>
+            </div>`
                          : `<span class="muted small">운영진만 해제</span>`}
           </div>`).join('')}
       </div>`;
@@ -1671,6 +1675,9 @@ async function loadAdmin(){
     document.querySelectorAll('#admin-list [data-resume]').forEach(b=>{
       b.onclick = ()=> resumeMember(b.dataset.resume, b.dataset.name);
     });
+    document.querySelectorAll('#admin-list [data-del]').forEach(b=>{
+      b.onclick = ()=> deleteMember(b.dataset.del, b.dataset.name, b.dataset.email);
+    });
     document.querySelectorAll('#admin-list [data-reset]').forEach(b=>{
       b.onclick = ()=> resetPlacement(b.dataset.reset, b.dataset.name);
     });
@@ -1732,6 +1739,37 @@ async function resumeMember(uid, name){
     toast(`${name||'학습자'}가 다시 학습할 수 있어요.`);
     loadAdmin();
   }catch(e){ console.error(e); toast('처리하지 못했어요. 보안 규칙을 확인해 주세요.'); }
+}
+/* 완전삭제 — 운영진만. 멈춰 둔 학습자에게만 노출된다(실수 방지 2단 구조).
+   members 문서 + 하위 컬렉션(log·levelup) + streaks 까지 함께 지운다.
+   ※ 구글 계정 자체는 남습니다. 그 학생이 다시 로그인하면 새 신청자로 뜹니다. */
+async function deleteMember(uid, name, email){
+  if(!isAdmin()){ toast('운영진만 삭제할 수 있어요.'); return; }
+  const key = (name||email||'').trim();
+  const typed = prompt(
+    `⚠️ ${key}의 기록을 완전히 지웁니다.\n`+
+    `레벨·통과한 유닛·학습 기록이 모두 사라지고 되돌릴 수 없어요.\n`+
+    `(잠시 막아두기만 하려면 취소하고 그대로 두세요)\n\n`+
+    `확인을 위해 아래 이름을 그대로 입력하세요:\n${key}`, '');
+  if(typed === null) return;
+  if(typed.trim() !== key){ toast('이름이 달라서 삭제하지 않았어요.'); return; }
+  try{
+    const ref = db.collection('members').doc(uid);
+    // 하위 컬렉션 먼저 (문서를 지워도 하위는 남기 때문에)
+    for(const sub of ['log','levelup']){
+      const snap = await ref.collection(sub).get();
+      for(let i=0; i<snap.docs.length; i+=400){
+        const batch = db.batch();
+        snap.docs.slice(i, i+400).forEach(d=> batch.delete(d.ref));
+        await batch.commit();
+      }
+    }
+    try{ await db.collection('streaks').doc(uid).delete(); }
+    catch(e){ console.warn('streaks 삭제 실패(무시 가능)', e); }
+    await ref.delete();
+    toast(`${key}의 기록을 지웠어요. 되돌릴 수 없습니다.`);
+    loadAdmin();
+  }catch(e){ console.error(e); toast('삭제하지 못했어요. 보안 규칙을 확인해 주세요.'); }
 }
 /* 배치고사 재응시 — 레벨을 비우면 다음 로그인 때 배치고사가 다시 뜬다.
    진도(passedUnits)는 지우지 않으므로, 같은 레벨로 다시 배치되면 통과 기록이 그대로 남는다. */

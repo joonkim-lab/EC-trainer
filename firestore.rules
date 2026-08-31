@@ -147,8 +147,9 @@ service cloud.firestore {
 
     // ── 스케줄러: 승인된 사람끼리 서로 열람, 쓰기는 본인만 ──
     match /streaks/{uid} {
-      allow read:  if isApproved() || canView();
-      allow write: if isOwner(uid) && isApproved();
+      allow read:   if isApproved() || canView();
+      allow write:  if isOwner(uid) && isApproved();
+      allow delete: if isAdmin();   // 완전삭제 때 딸린 기록 정리용
     }
 
     // ── 응원(선택) ──
